@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  app:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/backend
+      - elixir-deps:/backend/deps
+      - elixir-build:/backend/_build
+      - elixir-mix:/root/.mix
+      - node_modules:/backend/assets/node_modules
+    environment:
+      - GOOGLE_CLIENT_ID=136897329912-6aq4tta0e3fcdrnm5lpapk9e9f39oo7j.apps.googleusercontent.com
+      - MIX_ENV=dev
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+    command: sleep infinity
+
+  db:
+    image: postgres:16-bookworm
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  elixir-deps:
+  elixir-build:
+  elixir-mix:
+  node_modules:
+  pgdata:
