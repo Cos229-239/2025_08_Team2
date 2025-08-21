@@ -1,5 +1,6 @@
 package com.example.ravengamingnews
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -9,6 +10,7 @@ import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,22 +26,22 @@ import com.example.ravengamingnews.ui.TempRouteScreen
 /**
  * Enum class representing different screens in the app with their associated string resource IDs.
  */
-enum class TempNavScreen(val route: Int) {
-    TempRoute(R.string.temp_router),
-    Feed(R.string.feed),
-    Login(R.string.login),
-    CreateAccount(R.string.create_account),
-    EditAccount(R.string.edit_account),
-    Settings(R.string.settings)
-    // Add other screens here
+enum class TempNavScreen(@param:StringRes val title: Int) {
+    TempRoute(title = R.string.temp_router),
+    Feed(title= R.string.feed),
+    Login(title = R.string.login),
+    CreateAccount(title = R.string.create_account),
+    EditAccount(title = R.string.edit_account),
+    Settings(title = R.string.settings)
 }
 
 @Composable
 fun TempAppBar(
+    currentScreen: TempNavScreen,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(text = "App Bar") },
+        title = { Text(text = stringResource(currentScreen.title)) },
         colors = mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -55,7 +57,7 @@ fun TempAppScreen(
     val currentScreen = TempNavScreen.valueOf(backStackEntry?.destination?.route ?: TempNavScreen.Feed.name)
     Scaffold(
         topBar = {
-            TempAppBar()
+            TempAppBar(currentScreen = currentScreen)
         }
     ) { innerPadding ->
         NavHost(
