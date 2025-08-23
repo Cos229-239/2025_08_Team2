@@ -6,4 +6,7 @@
     <string name="create_account">Create Account</string>
     <string name="edit_account">Edit Account</string>
     <string name="temp_router">Router</string>
+    <string name="email">Email</string>
+    <string name="error_invalid_email">Invalid email.</string>
+    <string name="password">Password</string>
 </resources>
