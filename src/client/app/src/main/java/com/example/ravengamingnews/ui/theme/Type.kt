@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.ravengamingnews.R
 
@@ -30,6 +31,13 @@ val Typography = Typography(
         fontSize = 24.sp,
         lineHeight = 32.sp,
         letterSpacing = 0.5.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
     )
 /* Other default text styles to override
     labelSmall = TextStyle(
