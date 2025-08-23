@@ -12,4 +12,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 // Patch Raven Official Colors
+val Orange800 = Color(0xffc55908)
+val Primary000 = Color(0xffffffff)
+
 val Background800 = Color(0xff4d1b6b)
