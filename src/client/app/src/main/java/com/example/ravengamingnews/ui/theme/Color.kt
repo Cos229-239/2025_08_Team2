@@ -16,3 +16,4 @@ val Orange800 = Color(0xffc55908)
 val Primary000 = Color(0xffffffff)
 
 val Background800 = Color(0xff4d1b6b)
+val ErrorRed = Color(0xffff0000)

@@ -27,6 +27,7 @@ private val DarkColorScheme = darkColorScheme(
     secondary = PurpleGrey80,
     tertiary = Pink80,
     background = Background800,
+    error = ErrorRed,
 )
 
 @Composable
