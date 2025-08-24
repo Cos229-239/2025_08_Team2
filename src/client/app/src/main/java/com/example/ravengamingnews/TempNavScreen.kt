@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,13 +42,20 @@ fun TempAppBar(
     currentScreen: TempNavScreen,
     modifier: Modifier = Modifier
 ) {
-    TopAppBar(
-        title = { Text(text = stringResource(currentScreen.title)) },
-        colors = mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        modifier = modifier
-    )
+    Surface(shadowElevation = 16.dp) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(currentScreen.title),
+                    style = MaterialTheme.typography.headlineLarge
+                )
+            },
+            colors = mediumTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
+            modifier = modifier,
+        )
+    }
 }
 
 @Composable

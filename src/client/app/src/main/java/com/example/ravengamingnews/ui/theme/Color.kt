@@ -12,4 +12,9 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 // Patch Raven Official Colors
-val Background800 = Color(0xff4d1b6b)
+// Dark Mode
+val Orange = Color(0xffc55908)
+val Gray = Color(0xff9ea0a6)
+val DarkPurple = Color(0xff4d1b6b)
+
+// Light Mode (If we ever do light mode)
