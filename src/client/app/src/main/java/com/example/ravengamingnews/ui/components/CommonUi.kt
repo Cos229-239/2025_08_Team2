@@ -187,6 +187,15 @@ fun OutlinedTextFieldPreview() {
                     onClick = { },
                     size = CommonUiSize.Large
                 )
+                Text(text = "Hello World",
+                    style = typography.headlineSmall
+                )
+                Text(text = "Hello World",
+                    style = typography.headlineMedium
+                )
+                Text(text = "Hello World",
+                    style = typography.headlineLarge
+                )
             }
         }
     }
