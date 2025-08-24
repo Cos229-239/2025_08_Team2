@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,7 +25,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ravengamingnews.R
+import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
+import com.example.ravengamingnews.ui.theme.linkTextStyle
 
 /**
  * Container for common UI components in the app
@@ -120,6 +123,25 @@ fun ButtonPR(
     }
 }
 
+@Composable
+fun TextOnlyButtonPR(
+    modifier: Modifier = Modifier,
+    text: String,
+    onClick: () -> Unit,
+    size: CommonUiSize = CommonUiSize.Medium
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Text(
+            text = text.uppercase(),
+            color = MaterialTheme.colorScheme.secondary,
+            style = linkTextStyle(size)
+        )
+    }
+}
+
 @Preview
 @Composable
 fun OutlinedTextFieldPreview() {
@@ -150,6 +172,20 @@ fun OutlinedTextFieldPreview() {
                     modifier = Modifier.padding(top = 16.dp),
                     text = stringResource(R.string.login),
                     onClick = { }
+                )
+                TextOnlyButtonPR(
+                    text = stringResource(R.string.dont_have_account_sign_up),
+                    onClick = { },
+                    size = CommonUiSize.Small
+                )
+                TextOnlyButtonPR(
+                    text = stringResource(R.string.dont_have_account_sign_up),
+                    onClick = { }
+                )
+                TextOnlyButtonPR(
+                    text = stringResource(R.string.dont_have_account_sign_up),
+                    onClick = { },
+                    size = CommonUiSize.Large
                 )
             }
         }
