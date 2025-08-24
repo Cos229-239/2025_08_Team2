@@ -1,16 +1,21 @@
 package com.example.ravengamingnews.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,6 +23,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -87,7 +93,7 @@ fun OutlinedTextFieldPR(
             Text(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
-                style = typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = modifier
             )
         }
@@ -118,7 +124,7 @@ fun ButtonPR(
         Text(
             text = text.uppercase(),
             color = MaterialTheme.colorScheme.onPrimary,
-            style = typography.labelMedium
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -139,6 +145,38 @@ fun TextOnlyButtonPR(
             color = MaterialTheme.colorScheme.secondary,
             style = linkTextStyle(size)
         )
+    }
+}
+
+@Composable
+fun TopAppBarButtonPR(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+            Text(
+                text = text.uppercase(),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (selected) {
+                Box(
+                    modifier = Modifier
+                        .height(4.dp)
+                        .width(32.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.primary)
+                )
+            } else {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
     }
 }
 
@@ -188,14 +226,25 @@ fun OutlinedTextFieldPreview() {
                     size = CommonUiSize.Large
                 )
                 Text(text = "Hello World",
-                    style = typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall
                 )
                 Text(text = "Hello World",
-                    style = typography.headlineMedium
+                    style = MaterialTheme.typography.headlineMedium
                 )
                 Text(text = "Hello World",
-                    style = typography.headlineLarge
+                    style = MaterialTheme.typography.headlineLarge
                 )
+                Row {
+                    TopAppBarButtonPR(
+                        text = stringResource(R.string.feed),
+                        onClick = { }
+                    )
+                    TopAppBarButtonPR(
+                        text = stringResource(R.string.feed),
+                        onClick = { },
+                        selected = true
+                    )
+                }
             }
         }
     }
