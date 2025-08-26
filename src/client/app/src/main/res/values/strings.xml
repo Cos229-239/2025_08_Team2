@@ -10,4 +10,8 @@
     <string name="error_invalid_email">INVALID EMAIL.</string>
     <string name="password">PASSWORD</string>
     <string name="dont_have_account_sign_up">Don\'t have an account?</string>
+    <string name="account">Account</string>
+    <string name="filters">Filters</string>
+    <string name="notifications">Notifications</string>
+    <string name="saved">Saved</string>
 </resources>
