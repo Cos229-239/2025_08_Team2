@@ -1,6 +1,9 @@
 package com.example.ravengamingnews
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,7 +20,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.ravengamingnews.ui.CreateAccountScreen
 import com.example.ravengamingnews.ui.EditAccountScreen
 import com.example.ravengamingnews.ui.FeedScreen
@@ -60,7 +62,7 @@ fun TempAppBar(
 
 @Composable
 fun TempAppScreen(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = TempNavScreen.valueOf(backStackEntry?.destination?.route ?: TempNavScreen.Feed.name)
@@ -72,7 +74,9 @@ fun TempAppScreen(
         NavHost(
             navController = navController,
             startDestination = TempNavScreen.TempRoute.name,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            enterTransition = { fadeIn(animationSpec = tween(500)) },
+            exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
             composable(route = TempNavScreen.TempRoute.name) {
                 TempRouteScreen(
