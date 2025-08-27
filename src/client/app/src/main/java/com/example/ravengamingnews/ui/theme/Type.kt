@@ -79,7 +79,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = BigNoodle,
+        fontFamily = FontFamily.Default,
         fontStyle = FontStyle.Italic,
         fontSize = 24.sp,
         lineHeight = 32.sp,
