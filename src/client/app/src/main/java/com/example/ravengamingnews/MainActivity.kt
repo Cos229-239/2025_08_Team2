@@ -10,7 +10,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.ravengamingnews.ui.ModalDrawerSheetPR
+import com.example.ravengamingnews.ui.SettingsDrawer
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 ModalNavigationDrawer(
                     drawerState = drawerState,
-                    drawerContent = { ModalDrawerSheetPR(
+                    drawerContent = { SettingsDrawer(
                         navController = navController,
                         drawerState = drawerState,
                     ) },
@@ -42,7 +42,7 @@ fun GreetingPreview() {
         val navController = rememberNavController()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         ModalNavigationDrawer(
-            drawerContent = { ModalDrawerSheetPR(
+            drawerContent = { SettingsDrawer(
                 navController = navController,
                 drawerState = drawerState,
             ) },
