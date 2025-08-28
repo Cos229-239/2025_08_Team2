@@ -1,6 +1,5 @@
 package com.example.ravengamingnews.ui.components
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,14 +15,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +38,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Alignment
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
@@ -268,4 +273,56 @@ fun OutlinedTextFieldPreview() {
             }
         }
     }
+}
+
+@Composable
+fun TopAppBarPR(
+    selectedTab: String? = null,
+    onTabSelected: (String) -> Unit,
+    onMenuClick: () -> Unit
+) {
+    TopAppBar(
+        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer),
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+            ) {
+                // Waffle Menu
+                IconButton(onClick = onMenuClick) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menu",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                // Navigation buttons (Feed, All, Browse)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    val tabs = listOf("feed", "all", "browse")
+
+                    tabs.forEach { route ->
+                        TopAppBarButtonPR(
+                            text = route,
+                            selected = selectedTab == route,
+                            onClick = { onTabSelected(route) },
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                    }
+                }
+
+                // Logo next to menu
+                LogoImagePR(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .padding(start = 8.dp, end = 16.dp)
+                )
+            }
+        }
+    )
 }
