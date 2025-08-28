@@ -62,7 +62,8 @@ fun TempAppBar(
 
 @Composable
 fun TempAppScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = TempNavScreen.valueOf(backStackEntry?.destination?.route ?: TempNavScreen.Feed.name)
