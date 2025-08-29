@@ -17,4 +17,6 @@
     <string name="about">About</string>
     <string name="support">Support</string>
     <string name="sign_out">Sign Out</string>
+    <string name="all">All</string>
+    <string name="browse">Browse</string>
 </resources>
