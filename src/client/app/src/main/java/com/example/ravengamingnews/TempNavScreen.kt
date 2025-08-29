@@ -4,7 +4,15 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -13,6 +21,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,13 +36,15 @@ import com.example.ravengamingnews.ui.FeedScreen
 import com.example.ravengamingnews.ui.LoginScreen
 import com.example.ravengamingnews.ui.SettingsScreen
 import com.example.ravengamingnews.ui.TempRouteScreen
+import com.example.ravengamingnews.ui.components.LogoImagePR
+import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 
 /**
  * Enum class representing different screens in the app with their associated string resource IDs.
  */
 enum class TempNavScreen(@param:StringRes val title: Int) {
     TempRoute(title = R.string.temp_router),
-    Feed(title= R.string.feed),
+    Feed(title = R.string.feed),
     Login(title = R.string.login),
     CreateAccount(title = R.string.create_account),
     EditAccount(title = R.string.edit_account),
@@ -40,22 +52,63 @@ enum class TempNavScreen(@param:StringRes val title: Int) {
 }
 
 @Composable
-fun TempAppBar(
-    currentScreen: TempNavScreen,
+fun TopAppBarPR(
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentScreen =
+        TempNavScreen.valueOf(backStackEntry?.destination?.route ?: TempNavScreen.Feed.name)
+
     Surface(shadowElevation = 16.dp) {
         TopAppBar(
             title = {
-                Text(
-                    text = stringResource(currentScreen.title),
-                    style = MaterialTheme.typography.headlineLarge
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        TopAppBarButtonPR(
+                            text = stringResource(R.string.feed),
+                            onClick = { navController.navigate(TempNavScreen.Feed.name) },
+                            modifier.padding(8.dp),
+                            selected = currentScreen == TempNavScreen.Feed
+                        )
+                        TopAppBarButtonPR(
+                            text = stringResource(R.string.all),
+                            onClick = {},
+                            modifier.padding(8.dp)
+                        )
+                        TopAppBarButtonPR(
+                            text = stringResource(R.string.browse),
+                            onClick = {},
+                            modifier.padding(8.dp)
+                        )
+                    }
+
+                    LogoImagePR(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .padding(start = 8.dp, end = 16.dp)
+                    )
+                }
             },
-            colors = mediumTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            modifier = modifier,
+            colors = mediumTopAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            modifier = modifier
         )
     }
 }
@@ -63,13 +116,12 @@ fun TempAppBar(
 @Composable
 fun TempAppScreen(
     navController: NavHostController,
-    modifier: Modifier = Modifier
 ) {
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = TempNavScreen.valueOf(backStackEntry?.destination?.route ?: TempNavScreen.Feed.name)
     Scaffold(
         topBar = {
-            TempAppBar(currentScreen = currentScreen)
+            TopAppBarPR(
+                navController = navController,
+            )
         }
     ) { innerPadding ->
         NavHost(
