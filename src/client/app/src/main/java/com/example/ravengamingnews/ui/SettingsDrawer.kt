@@ -35,7 +35,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.ravengamingnews.AuthViewModel
 import com.example.ravengamingnews.R
-import com.example.ravengamingnews.TempNavScreen
+import com.example.ravengamingnews.HomeScreen
 import com.example.ravengamingnews.ui.components.ButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import kotlinx.coroutines.launch
@@ -116,7 +116,7 @@ private fun MainSettingsDrawerContent(
             text = stringResource(R.string.account),
             onClick = {
                 scope.launch { drawerState.close() }
-                navController.navigate(TempNavScreen.EditAccount.name)
+                navController.navigate(HomeScreen.EditAccount.name)
             }
         )
         SettingsButton(

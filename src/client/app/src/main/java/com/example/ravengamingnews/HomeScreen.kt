@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +21,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,11 +34,12 @@ import com.example.ravengamingnews.ui.EditAccountScreen
 import com.example.ravengamingnews.ui.FeedScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
+import kotlinx.coroutines.launch
 
 /**
  * Enum class representing different screens in the app with their associated string resource IDs.
  */
-enum class TempNavScreen(@param:StringRes val title: Int) {
+enum class HomeScreen(@param:StringRes val title: Int) {
     Feed(title = R.string.feed),
     EditAccount(title = R.string.edit_account),
     Filters(title = R.string.filters),
@@ -49,12 +52,15 @@ enum class TempNavScreen(@param:StringRes val title: Int) {
 @Composable
 fun TopAppBarPR(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    drawerState: DrawerState
 ) {
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen =
-        TempNavScreen.valueOf(backStackEntry?.destination?.route ?: TempNavScreen.Feed.name)
+        HomeScreen.valueOf(backStackEntry?.destination?.route ?: HomeScreen.Feed.name)
+
+    val scope = rememberCoroutineScope()
 
     Surface(shadowElevation = 16.dp) {
         TopAppBar(
@@ -65,7 +71,7 @@ fun TopAppBarPR(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Menu",
@@ -79,9 +85,9 @@ fun TopAppBarPR(
                     ) {
                         TopAppBarButtonPR(
                             text = stringResource(R.string.feed),
-                            onClick = { navController.navigate(TempNavScreen.Feed.name) },
+                            onClick = { navController.navigate(HomeScreen.Feed.name) },
                             modifier.padding(8.dp),
-                            selected = currentScreen == TempNavScreen.Feed
+                            selected = currentScreen == HomeScreen.Feed
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.all),
@@ -109,27 +115,29 @@ fun TopAppBarPR(
 }
 
 @Composable
-fun TempAppScreen(
+fun HomeScreen(
     navController: NavHostController,
+    drawerState: DrawerState,
 ) {
     Scaffold(
         topBar = {
             TopAppBarPR(
                 navController = navController,
+                drawerState = drawerState
             )
         }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = TempNavScreen.Feed.name,
+            startDestination = HomeScreen.Feed.name,
             modifier = Modifier.padding(innerPadding),
             enterTransition = { fadeIn(animationSpec = tween(500)) },
             exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
-            composable(route = TempNavScreen.Feed.name) {
+            composable(route = HomeScreen.Feed.name) {
                 FeedScreen()
             }
-            composable(route = TempNavScreen.EditAccount.name) {
+            composable(route = HomeScreen.EditAccount.name) {
                 EditAccountScreen()
             }
         }

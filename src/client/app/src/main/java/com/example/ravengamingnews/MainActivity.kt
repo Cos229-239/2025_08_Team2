@@ -67,7 +67,7 @@ fun MainApp(authViewModel: AuthViewModel) {
             )
         },
     ) {
-        TempAppScreen(navController)
+        HomeScreen(navController, drawerState)
     }
 }
 
