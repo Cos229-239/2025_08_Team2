@@ -1,5 +1,7 @@
 package com.example.ravengamingnews.ui.components
 
+import android.view.Surface
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,27 +11,38 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Alignment
+import androidx.navigation.NavHostController
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
@@ -149,6 +162,17 @@ fun TextOnlyButtonPR(
 }
 
 @Composable
+fun LogoImagePR(modifier: Modifier = Modifier){
+    val image = painterResource(R.drawable.patch_raven_logo_ver_3_orange)
+
+    Image(
+        painter = image,
+        contentDescription = null,
+        modifier = modifier
+    )
+}
+
+@Composable
 fun TopAppBarButtonPR(
     text: String,
     onClick: () -> Unit,
@@ -190,6 +214,11 @@ fun OutlinedTextFieldPreview() {
                 verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
             ) {
+                LogoImagePR(
+                    modifier = Modifier
+                        .size(250.dp)
+                        .padding(0.dp, 0.dp, 0.dp, 0.dp)
+                )
                 OutlinedTextFieldPR(
                     label = stringResource(R.string.email),
                     value = "test@@test.com",

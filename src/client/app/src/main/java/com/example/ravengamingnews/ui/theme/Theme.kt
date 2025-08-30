@@ -24,6 +24,7 @@ private val DarkColorScheme = darkColorScheme(
     primary = Orange,
     primaryContainer = DarkPurple,
     onPrimary = Color.White,
+    onPrimaryContainer = Gray,
     onSurface = Gray,
     onBackground = Gray,
     secondary = Gray,

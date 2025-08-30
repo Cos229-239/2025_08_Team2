@@ -6,8 +6,18 @@
     <string name="create_account">Create Account</string>
     <string name="edit_account">Edit Account</string>
     <string name="temp_router">Router</string>
-    <string name="email">Email</string>
-    <string name="error_invalid_email">Invalid email.</string>
-    <string name="password">Password</string>
+    <string name="email">EMAIL</string>
+    <string name="error_invalid_email">INVALID EMAIL.</string>
+    <string name="password">PASSWORD</string>
     <string name="dont_have_account_sign_up">Don\'t have an account?</string>
+    <string name="account">Account</string>
+    <string name="filters">Filters</string>
+    <string name="notifications">Notifications</string>
+    <string name="saved">Saved</string>
+    <string name="about">About</string>
+    <string name="support">Support</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="all">All</string>
+    <string name="browse">Browse</string>
+    <string name="continue_without_account">Continue Without Account</string>
 </resources>
