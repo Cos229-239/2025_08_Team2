@@ -17,6 +17,7 @@ object TempDataSource {
         "Game Updates",
         "Cosmetic",
         "Game Modes",
+        "Patch Update"
     )
 
     val fakeArticleList = listOf(
@@ -59,6 +60,16 @@ object TempDataSource {
             date = "2023-02-01",
             game = "Heroes of the Storm",
             topic = "Game Updates"
+        ),
+        Article(
+            id = 5,
+            title = "Vainglory Releases Latest Patch",
+            summary = "Vainglory has released a new Patch Update providing key buffs and nerfs to an interesting selection of heroes.",
+            content = "Saw and Lyra have seen an interesting buff that should make them more viable in group combat. Whereas Idris and Malene are going to be questionable in single lane focus moving forward. Be on the lookout for how Skye performs under pressure when focusing towers.",
+            author = "Brandon Morgan",
+            date = "2024-05-19",
+            game = "Vainglory",
+            topic = "Patch Update"
         )
     )
 }
