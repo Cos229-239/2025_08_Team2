@@ -16,5 +16,6 @@ val Pink40 = Color(0xFF7D5260)
 val Orange = Color(0xffc55908)
 val Gray = Color(0xff9ea0a6)
 val DarkPurple = Color(0xff4d1b6b)
+val Teal = Color(0xff3E5C76)
 
 // Light Mode (If we ever do light mode)
