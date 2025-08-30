@@ -1,5 +1,6 @@
 package com.example.ravengamingnews.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,11 +16,12 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -31,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.ravengamingnews.AuthViewModel
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.TempNavScreen
 import com.example.ravengamingnews.ui.components.ButtonPR
@@ -41,10 +44,9 @@ import kotlinx.coroutines.launch
 fun SettingsDrawer(
     navController: NavHostController,
     drawerState: DrawerState,
-    modifier: Modifier = Modifier
+    authViewModel: AuthViewModel,
+    modifier: Modifier = Modifier,
 ) {
-    // Temporary, replace with real login state
-    val isLoggedIn = false
     ModalDrawerSheet(
         drawerContainerColor = MaterialTheme.colorScheme.primaryContainer,
         drawerShape = RectangleShape,
@@ -60,9 +62,8 @@ fun SettingsDrawer(
             )
             Spacer(modifier = Modifier.weight(1f))
             BottomDrawerSection(
-                navController = navController,
                 drawerState = drawerState,
-                isLoggedIn = isLoggedIn,
+                authViewModel = authViewModel,
                 modifier = modifier
             )
         }
@@ -135,11 +136,11 @@ private fun MainSettingsDrawerContent(
 
 @Composable
 private fun BottomDrawerSection(
-    navController: NavHostController,
     drawerState: DrawerState,
-    @Suppress("SameParameterValue") isLoggedIn: Boolean, // Remove warning suppression when login state is dynamic
+    authViewModel: AuthViewModel,
     modifier: Modifier = Modifier
 ) {
+    val authState by authViewModel.authState.collectAsState()
     val scope = rememberCoroutineScope()
 
     Column(
@@ -157,12 +158,12 @@ private fun BottomDrawerSection(
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        val buttonText = if (isLoggedIn) stringResource(R.string.sign_out) else stringResource(R.string.login)
+        val buttonText = if (authState.isLoggedIn) stringResource(R.string.sign_out) else stringResource(R.string.login)
         ButtonPR(
             text = buttonText,
             onClick = {
                 scope.launch { drawerState.close() }
-                navController.navigate(TempNavScreen.Login.name)
+                authViewModel.logout()
             },
             modifier = Modifier
                 .padding(16.dp, end = 32.dp)
@@ -186,23 +187,23 @@ private fun SettingsButton(
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview
 @Composable
 fun SettingsDrawerPreview() {
     RavenGamingNewsTheme {
         val navController = rememberNavController()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val authViewModel = AuthViewModel() // Create a real instance, not an object extension
         ModalNavigationDrawer(
             drawerContent = {
                 SettingsDrawer(
                     navController = navController,
                     drawerState = drawerState,
+                    authViewModel = authViewModel,
                 )
             },
         ) {
-            Scaffold { innerPadding ->
-                SettingsScreen(Modifier.padding(innerPadding))
-            }
         }
     }
 }

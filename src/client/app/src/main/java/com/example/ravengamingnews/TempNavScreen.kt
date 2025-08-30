@@ -16,12 +16,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,12 +28,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.ravengamingnews.ui.CreateAccountScreen
 import com.example.ravengamingnews.ui.EditAccountScreen
 import com.example.ravengamingnews.ui.FeedScreen
-import com.example.ravengamingnews.ui.LoginScreen
-import com.example.ravengamingnews.ui.SettingsScreen
-import com.example.ravengamingnews.ui.TempRouteScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 
@@ -43,12 +37,13 @@ import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
  * Enum class representing different screens in the app with their associated string resource IDs.
  */
 enum class TempNavScreen(@param:StringRes val title: Int) {
-    TempRoute(title = R.string.temp_router),
     Feed(title = R.string.feed),
-    Login(title = R.string.login),
-    CreateAccount(title = R.string.create_account),
     EditAccount(title = R.string.edit_account),
-    Settings(title = R.string.settings)
+    Filters(title = R.string.filters),
+    Notifications(title = R.string.notifications),
+    Saved(title = R.string.saved),
+    Support(title = R.string.support),
+    About(title = R.string.about),
 }
 
 @Composable
@@ -126,31 +121,13 @@ fun TempAppScreen(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = TempNavScreen.TempRoute.name,
+            startDestination = TempNavScreen.Feed.name,
             modifier = Modifier.padding(innerPadding),
             enterTransition = { fadeIn(animationSpec = tween(500)) },
             exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
-            composable(route = TempNavScreen.TempRoute.name) {
-                TempRouteScreen(
-                    onFeedClick = { navController.navigate(TempNavScreen.Feed.name) },
-                    onLoginClick = { navController.navigate(TempNavScreen.Login.name) },
-                    onCreateAccountClick = { navController.navigate(TempNavScreen.CreateAccount.name) },
-                    onEditAccountClick = { navController.navigate(TempNavScreen.EditAccount.name) },
-                    onSettingsClick = { navController.navigate(TempNavScreen.Settings.name) }
-                )
-            }
             composable(route = TempNavScreen.Feed.name) {
                 FeedScreen()
-            }
-            composable(route = TempNavScreen.Login.name) {
-                LoginScreen()
-            }
-            composable(route = TempNavScreen.CreateAccount.name) {
-                CreateAccountScreen()
-            }
-            composable(route = TempNavScreen.Settings.name) {
-                SettingsScreen()
             }
             composable(route = TempNavScreen.EditAccount.name) {
                 EditAccountScreen()

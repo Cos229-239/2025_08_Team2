@@ -12,25 +12,25 @@ import com.example.ravengamingnews.ui.components.TextOnlyButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
-fun LoginScreen(
+fun NoAccountScreen(
     modifier: Modifier = Modifier,
-    onLoginSuccess: () -> Unit = {},
-    onCreateAccountClick : () -> Unit = {},
+    onAccountCreated: () -> Unit = {},
+    onContinueAsGuest: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
     ) {
         Text(
-            text = stringResource(R.string.login),
+            text = stringResource(R.string.create_account),
         )
         ButtonPR(
-            text = stringResource(R.string.login),
-            onClick = onLoginSuccess, // Replace with real login logic
+            text = stringResource(R.string.create_account),
+            onClick = onAccountCreated, // TODO: Needs to actually route to the create account screen
             modifier = modifier
         )
         TextOnlyButtonPR(
-            text = stringResource(R.string.dont_have_account_sign_up),
-            onClick = onCreateAccountClick,
+            text = stringResource(R.string.continue_without_account),
+            onClick = onContinueAsGuest,
             modifier = modifier
         )
     }
@@ -38,8 +38,8 @@ fun LoginScreen(
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
+fun NoAccountScreenPreview() {
     RavenGamingNewsTheme {
-        LoginScreen()
+        NoAccountScreen()
     }
 }

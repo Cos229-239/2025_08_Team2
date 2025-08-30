@@ -19,4 +19,5 @@
     <string name="sign_out">Sign Out</string>
     <string name="all">All</string>
     <string name="browse">Browse</string>
+    <string name="continue_without_account">Continue Without Account</string>
 </resources>
