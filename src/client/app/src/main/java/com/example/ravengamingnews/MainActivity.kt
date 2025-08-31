@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,7 +28,9 @@ import com.example.ravengamingnews.ui.NoAccountScreen
 import com.example.ravengamingnews.ui.LoginScreen
 import com.example.ravengamingnews.ui.SettingsDrawer
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,10 +44,10 @@ class MainActivity : ComponentActivity() {
                         LoadingScreen()
                     }
                     authState.isLoggedIn || authState.continuedAsGuest -> {
-                        MainApp(authViewModel)
+                        MainApp()
                     }
                     else -> {
-                        LoginFlow(authViewModel)
+                        LoginFlow()
                     }
                 }
             }
@@ -53,7 +56,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainApp(authViewModel: AuthViewModel) {
+fun MainApp() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -63,7 +66,6 @@ fun MainApp(authViewModel: AuthViewModel) {
             SettingsDrawer(
                 navController = navController,
                 drawerState = drawerState,
-                authViewModel = authViewModel
             )
         },
     ) {
@@ -72,8 +74,9 @@ fun MainApp(authViewModel: AuthViewModel) {
 }
 
 @Composable
-fun LoginFlow(authViewModel: AuthViewModel) {
+fun LoginFlow() {
     val navController = rememberNavController()
+    val authViewModel: AuthViewModel = hiltViewModel()
 
     Scaffold { innerPadding ->
         NavHost(
@@ -114,15 +117,13 @@ fun GreetingPreview() {
     RavenGamingNewsTheme {
         val navController = rememberNavController()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val authViewModel = AuthViewModel() // Replace with a real instance
         ModalNavigationDrawer(
             drawerContent = { SettingsDrawer(
                 navController = navController,
                 drawerState = drawerState,
-                authViewModel = authViewModel,
             ) },
         ) {
-            MainApp(authViewModel = authViewModel)
+            MainApp()
         }
     }
 }
