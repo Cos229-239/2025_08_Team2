@@ -26,12 +26,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.ravengamingnews.navigation.NavigationViewModel
+import com.example.ravengamingnews.ui.AboutScreen
 import com.example.ravengamingnews.ui.EditAccountScreen
 import com.example.ravengamingnews.ui.FeedScreen
+import com.example.ravengamingnews.ui.FiltersScreen
+import com.example.ravengamingnews.ui.SavedScreen
+import com.example.ravengamingnews.ui.SupportScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 import kotlinx.coroutines.launch
@@ -43,7 +49,6 @@ enum class HomeScreen(@param:StringRes val title: Int) {
     Feed(title = R.string.feed),
     EditAccount(title = R.string.edit_account),
     Filters(title = R.string.filters),
-    Notifications(title = R.string.notifications),
     Saved(title = R.string.saved),
     Support(title = R.string.support),
     About(title = R.string.about),
@@ -51,11 +56,11 @@ enum class HomeScreen(@param:StringRes val title: Int) {
 
 @Composable
 fun TopAppBarPR(
-    navController: NavHostController,
     modifier: Modifier = Modifier,
-    drawerState: DrawerState
+    drawerState: DrawerState,
 ) {
-
+    val navController = rememberNavController()
+    val navigationViewModel: NavigationViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen =
         HomeScreen.valueOf(backStackEntry?.destination?.route ?: HomeScreen.Feed.name)
@@ -85,7 +90,7 @@ fun TopAppBarPR(
                     ) {
                         TopAppBarButtonPR(
                             text = stringResource(R.string.feed),
-                            onClick = { navController.navigate(HomeScreen.Feed.name) },
+                            onClick = { navigationViewModel.navigateTo(HomeScreen.Feed.name) },
                             modifier.padding(8.dp),
                             selected = currentScreen == HomeScreen.Feed
                         )
@@ -116,13 +121,17 @@ fun TopAppBarPR(
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
     drawerState: DrawerState,
 ) {
+    val navController = rememberNavController()
+    val navigationViewModel: NavigationViewModel = hiltViewModel()
+
+    // Set NavController in NavigationViewModel
+    navigationViewModel.setNavController(navController)
+
     Scaffold(
         topBar = {
             TopAppBarPR(
-                navController = navController,
                 drawerState = drawerState
             )
         }
@@ -139,6 +148,18 @@ fun HomeScreen(
             }
             composable(route = HomeScreen.EditAccount.name) {
                 EditAccountScreen()
+            }
+            composable(route = HomeScreen.Filters.name) {
+                FiltersScreen()
+            }
+            composable(route = HomeScreen.Saved.name) {
+                SavedScreen()
+            }
+            composable(route = HomeScreen.Support.name) {
+                SupportScreen()
+            }
+            composable(route = HomeScreen.About.name) {
+                AboutScreen()
             }
         }
     }
