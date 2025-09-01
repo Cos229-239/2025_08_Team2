@@ -32,18 +32,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.ravengamingnews.AuthViewModel
 import com.example.ravengamingnews.HomeScreen
 import com.example.ravengamingnews.R
+import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.components.ButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsDrawer(
-    navController: NavHostController,
     drawerState: DrawerState,
     modifier: Modifier = Modifier,
 ) {
@@ -56,7 +54,6 @@ fun SettingsDrawer(
         ) {
             DrawerHeader()
             MainSettingsDrawerContent(
-                navController = navController,
                 drawerState = drawerState,
                 modifier = modifier,
             )
@@ -103,10 +100,10 @@ private fun DrawerHeader() {
 
 @Composable
 private fun MainSettingsDrawerContent(
-    navController: NavHostController,
     drawerState: DrawerState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+    val navigationViewModel: NavigationViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
     Column(
         modifier = modifier.padding(start = 16.dp, top = 2.dp, bottom = 2.dp)
@@ -115,20 +112,29 @@ private fun MainSettingsDrawerContent(
             text = stringResource(R.string.account),
             onClick = {
                 scope.launch { drawerState.close() }
-                navController.navigate(HomeScreen.EditAccount.name)
+                navigationViewModel.navigateTo(HomeScreen.EditAccount.name)
             }
         )
         SettingsButton(
             text = stringResource(R.string.filters),
-            onClick = {}
+            onClick = {
+                scope.launch { drawerState.close() }
+                navigationViewModel.navigateTo(HomeScreen.Filters.name)
+            }
         )
         SettingsButton(
             text = stringResource(R.string.notifications),
-            onClick = {}
+            onClick = {
+                scope.launch { drawerState.close() }
+                // TODO: Open Android App Notifications Settings for this app
+            }
         )
         SettingsButton(
             text = stringResource(R.string.saved),
-            onClick = {}
+            onClick = {
+                scope.launch { drawerState.close() }
+                navigationViewModel.navigateTo(HomeScreen.Saved.name)
+            }
         )
     }
 }
@@ -139,6 +145,7 @@ private fun BottomDrawerSection(
     modifier: Modifier = Modifier,
 ) {
     val authViewModel: AuthViewModel = hiltViewModel()
+    val navigationViewModel: NavigationViewModel = hiltViewModel()
     val authState by authViewModel.authState.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -148,16 +155,23 @@ private fun BottomDrawerSection(
         SettingsButton(
             text = stringResource(R.string.support).uppercase(),
             style = MaterialTheme.typography.titleLarge,
-            onClick = {}
+            onClick = {
+                scope.launch { drawerState.close() }
+                navigationViewModel.navigateTo(HomeScreen.Support.name)
+            }
         )
         SettingsButton(
             text = stringResource(R.string.about).uppercase(),
             style = MaterialTheme.typography.titleLarge,
-            onClick = {}
+            onClick = {
+                scope.launch { drawerState.close() }
+                navigationViewModel.navigateTo(HomeScreen.About.name)
+            }
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        val buttonText = if (authState.isLoggedIn) stringResource(R.string.sign_out) else stringResource(R.string.login)
+        val buttonText =
+            if (authState.isLoggedIn) stringResource(R.string.sign_out) else stringResource(R.string.login)
         ButtonPR(
             text = buttonText,
             onClick = {
@@ -191,12 +205,10 @@ private fun SettingsButton(
 @Composable
 fun SettingsDrawerPreview() {
     RavenGamingNewsTheme {
-        val navController = rememberNavController()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         ModalNavigationDrawer(
             drawerContent = {
                 SettingsDrawer(
-                    navController = navController,
                     drawerState = drawerState,
                 )
             },
