@@ -1,6 +1,8 @@
 package com.example.ravengamingnews.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -105,6 +108,7 @@ private fun MainSettingsDrawerContent(
 ) {
     val navigationViewModel: NavigationViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current  // Add this line to get the context
     Column(
         modifier = modifier.padding(start = 16.dp, top = 2.dp, bottom = 2.dp)
     ) {
@@ -126,7 +130,11 @@ private fun MainSettingsDrawerContent(
             text = stringResource(R.string.notifications),
             onClick = {
                 scope.launch { drawerState.close() }
-                // TODO: Open Android App Notifications Settings for this app
+                // Open Android App Notifications Settings for this app
+                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                }
+                context.startActivity(intent)
             }
         )
         SettingsButton(
