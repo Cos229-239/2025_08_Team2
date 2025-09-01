@@ -31,11 +31,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.ravengamingnews.AuthViewModel
-import com.example.ravengamingnews.R
 import com.example.ravengamingnews.HomeScreen
+import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.components.ButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import kotlinx.coroutines.launch
@@ -44,7 +45,6 @@ import kotlinx.coroutines.launch
 fun SettingsDrawer(
     navController: NavHostController,
     drawerState: DrawerState,
-    authViewModel: AuthViewModel,
     modifier: Modifier = Modifier,
 ) {
     ModalDrawerSheet(
@@ -63,7 +63,6 @@ fun SettingsDrawer(
             Spacer(modifier = Modifier.weight(1f))
             BottomDrawerSection(
                 drawerState = drawerState,
-                authViewModel = authViewModel,
                 modifier = modifier
             )
         }
@@ -137,9 +136,9 @@ private fun MainSettingsDrawerContent(
 @Composable
 private fun BottomDrawerSection(
     drawerState: DrawerState,
-    authViewModel: AuthViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+    val authViewModel: AuthViewModel = hiltViewModel()
     val authState by authViewModel.authState.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -194,13 +193,11 @@ fun SettingsDrawerPreview() {
     RavenGamingNewsTheme {
         val navController = rememberNavController()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val authViewModel = AuthViewModel() // Create a real instance, not an object extension
         ModalNavigationDrawer(
             drawerContent = {
                 SettingsDrawer(
                     navController = navController,
                     drawerState = drawerState,
-                    authViewModel = authViewModel,
                 )
             },
         ) {
