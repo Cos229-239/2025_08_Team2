@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -43,6 +46,7 @@ import com.example.ravengamingnews.ui.SavedScreen
 import com.example.ravengamingnews.ui.SupportScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
+import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import kotlinx.coroutines.launch
 
 /**
@@ -123,20 +127,80 @@ fun TopAppBarPR(
 }
 
 @Composable
+fun SettingsTopAppBar(
+    modifier: Modifier = Modifier,
+    title: String,
+    onBackClicked: () -> Unit,
+) {
+    Surface(shadowElevation = 16.dp) {
+        TopAppBar(
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    IconButton(onClick = onBackClicked) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            },
+            colors = mediumTopAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
 fun HomeScreen(
     drawerState: DrawerState,
 ) {
     val navController = rememberNavController()
     val navigationViewModel: NavigationViewModel = hiltViewModel()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route ?: HomeScreen.Feed.name
+
+    // Define main screen routes (anything else will be considered settings-related)
+    val mainScreenRoutes = listOf(
+        HomeScreen.Feed.name,
+        // "All",
+        // "Browse",
+        // "Article Detail Screen", etc...
+    )
+    // Check if current route is a main screen
+    val isMainScreen = currentRoute in mainScreenRoutes
 
     // Set NavController in NavigationViewModel
     navigationViewModel.setNavController(navController)
 
     Scaffold(
         topBar = {
-            TopAppBarPR(
-                drawerState = drawerState
-            )
+            if (isMainScreen) {
+                TopAppBarPR(
+                    drawerState = drawerState
+                )
+            } else {
+                SettingsTopAppBar(
+                    title = stringResource(
+                        HomeScreen.valueOf(
+                            backStackEntry?.destination?.route
+                                ?: HomeScreen.Feed.name
+                        ).title
+                    ),
+                    onBackClicked = { navigationViewModel.navigateUp() }
+                )
+            }
         }
     ) { innerPadding ->
         NavHost(
@@ -168,5 +232,36 @@ fun HomeScreen(
                 NavType.StringType})) {backStackEntry -> val articleId = backStackEntry.arguments?.getString("articleId")
             ArticlePage(articleId = articleId)}
         }
+    }
+}
+
+@Preview
+@Composable
+fun SettingsTopAppBarPreview() {
+    RavenGamingNewsTheme {
+        SettingsTopAppBar(
+            title = stringResource(R.string.edit_account),
+            onBackClicked = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TopAppBarPreview() {
+    RavenGamingNewsTheme {
+        TopAppBarPR(
+            drawerState = DrawerState(initialValue = androidx.compose.material3.DrawerValue.Closed)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenPreview() {
+    RavenGamingNewsTheme {
+        HomeScreen(
+            drawerState = DrawerState(initialValue = androidx.compose.material3.DrawerValue.Closed)
+        )
     }
 }
