@@ -27,12 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.AboutScreen
+import com.example.ravengamingnews.ui.ArticlePage
 import com.example.ravengamingnews.ui.EditAccountScreen
 import com.example.ravengamingnews.ui.FeedScreen
 import com.example.ravengamingnews.ui.FiltersScreen
@@ -144,7 +147,7 @@ fun HomeScreen(
             exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
             composable(route = HomeScreen.Feed.name) {
-                FeedScreen()
+                FeedScreen(navigationViewModel)
             }
             composable(route = HomeScreen.EditAccount.name) {
                 EditAccountScreen()
@@ -161,6 +164,9 @@ fun HomeScreen(
             composable(route = HomeScreen.About.name) {
                 AboutScreen()
             }
+            composable(route = "article/{articleId}", arguments = listOf(navArgument("articleId"){type =
+                NavType.StringType})) {backStackEntry -> val articleId = backStackEntry.arguments?.getString("articleId")
+            ArticlePage(articleId = articleId)}
         }
     }
 }
