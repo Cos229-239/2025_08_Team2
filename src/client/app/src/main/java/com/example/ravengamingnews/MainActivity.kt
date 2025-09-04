@@ -17,19 +17,25 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.NoAccountScreen
 import com.example.ravengamingnews.ui.LoginScreen
 import com.example.ravengamingnews.ui.SettingsDrawer
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,11 +46,13 @@ class MainActivity : ComponentActivity() {
                     authState.isLoading -> {
                         LoadingScreen()
                     }
+
                     authState.isLoggedIn || authState.continuedAsGuest -> {
-                        MainApp(authViewModel)
+                        MainApp()
                     }
+
                     else -> {
-                        LoginFlow(authViewModel)
+                        LoginFlow()
                     }
                 }
             }
@@ -53,27 +61,40 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainApp(authViewModel: AuthViewModel) {
+fun MainApp() {
     val navController = rememberNavController()
+    val navigationViewModel: NavigationViewModel = hiltViewModel()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    // Set the NavController in the NavigationViewModel
+    remember {
+        navigationViewModel.setNavController(navController)
+        true
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             SettingsDrawer(
-                navController = navController,
                 drawerState = drawerState,
-                authViewModel = authViewModel
             )
         },
     ) {
-        HomeScreen(navController, drawerState)
+        HomeScreen(drawerState)
     }
 }
 
 @Composable
-fun LoginFlow(authViewModel: AuthViewModel) {
+fun LoginFlow() {
     val navController = rememberNavController()
+    val navigationViewModel: NavigationViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
+
+    // Set the NavController in the NavigationViewModel
+    remember {
+        navigationViewModel.setNavController(navController)
+        true
+    }
 
     Scaffold { innerPadding ->
         NavHost(
@@ -84,7 +105,7 @@ fun LoginFlow(authViewModel: AuthViewModel) {
             composable("login") {
                 LoginScreen(
                     onLoginSuccess = { authViewModel.login() },
-                    onCreateAccountClick = { navController.navigate("create_account") }
+                    onCreateAccountClick = { navigationViewModel.navigateTo("create_account") }
                 )
             }
             composable("create_account") {
@@ -112,17 +133,15 @@ fun LoadingScreen() {
 @Composable
 fun GreetingPreview() {
     RavenGamingNewsTheme {
-        val navController = rememberNavController()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val authViewModel = AuthViewModel() // Replace with a real instance
         ModalNavigationDrawer(
-            drawerContent = { SettingsDrawer(
-                navController = navController,
-                drawerState = drawerState,
-                authViewModel = authViewModel,
-            ) },
+            drawerContent = {
+                SettingsDrawer(
+                    drawerState = drawerState,
+                )
+            },
         ) {
-            MainApp(authViewModel = authViewModel)
+            MainApp()
         }
     }
 }

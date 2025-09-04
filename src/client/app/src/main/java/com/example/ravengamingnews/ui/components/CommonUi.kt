@@ -1,6 +1,5 @@
 package com.example.ravengamingnews.ui.components
 
-import android.view.Surface
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,22 +15,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -41,8 +34,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.Alignment
-import androidx.navigation.NavHostController
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
@@ -72,10 +63,12 @@ fun OutlinedTextFieldPR(
     keyboardOptions: KeyboardOptions? = null,
     isPassword: Boolean = false
 ) {
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .padding(vertical = 4.dp)
-        .padding(horizontal = 16.dp)) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .padding(horizontal = 16.dp)
+    ) {
         OutlinedTextField(
             value = value,
             singleLine = true,
@@ -162,7 +155,7 @@ fun TextOnlyButtonPR(
 }
 
 @Composable
-fun LogoImagePR(modifier: Modifier = Modifier){
+fun LogoImagePR(modifier: Modifier = Modifier) {
     val image = painterResource(R.drawable.patch_raven_logo_ver_3_orange)
 
     Image(
@@ -183,7 +176,7 @@ fun TopAppBarButtonPR(
         onClick = onClick,
         modifier = modifier
     ) {
-        Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = text.uppercase(),
                 style = MaterialTheme.typography.headlineMedium,
@@ -209,10 +202,12 @@ fun TopAppBarButtonPR(
 fun OutlinedTextFieldPreview() {
     RavenGamingNewsTheme {
         Scaffold { innerPadding ->
-            Column(modifier = Modifier.padding(innerPadding)
-                .fillMaxSize(),
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
                 verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
-                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LogoImagePR(
                     modifier = Modifier
@@ -254,13 +249,16 @@ fun OutlinedTextFieldPreview() {
                     onClick = { },
                     size = CommonUiSize.Large
                 )
-                Text(text = "Hello World",
+                Text(
+                    text = "Hello World",
                     style = MaterialTheme.typography.headlineSmall
                 )
-                Text(text = "Hello World",
+                Text(
+                    text = "Hello World",
                     style = MaterialTheme.typography.headlineMedium
                 )
-                Text(text = "Hello World",
+                Text(
+                    text = "Hello World",
                     style = MaterialTheme.typography.headlineLarge
                 )
                 Row {
