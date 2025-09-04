@@ -1,6 +1,5 @@
 package com.example.ravengamingnews
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -36,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.AboutScreen
 import com.example.ravengamingnews.ui.ArticlePage
@@ -49,28 +49,15 @@ import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import kotlinx.coroutines.launch
 
-/**
- * Enum class representing different screens in the app with their associated string resource IDs.
- */
-enum class HomeScreen(@param:StringRes val title: Int) {
-    Feed(title = R.string.feed),
-    EditAccount(title = R.string.edit_account),
-    Filters(title = R.string.filters),
-    Saved(title = R.string.saved),
-    Support(title = R.string.support),
-    About(title = R.string.about),
-}
-
 @Composable
 fun TopAppBarPR(
-    modifier: Modifier = Modifier,
     drawerState: DrawerState,
+    modifier: Modifier = Modifier,
+    navigationViewModel: NavigationViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
-    val navigationViewModel: NavigationViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen =
-        HomeScreen.valueOf(backStackEntry?.destination?.route ?: HomeScreen.Feed.name)
+    val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
 
     val scope = rememberCoroutineScope()
 
@@ -97,9 +84,9 @@ fun TopAppBarPR(
                     ) {
                         TopAppBarButtonPR(
                             text = stringResource(R.string.feed),
-                            onClick = { navigationViewModel.navigateTo(HomeScreen.Feed.name) },
+                            onClick = { navigationViewModel.navigateTo(AppRoutes.HOME_FEED) },
                             modifier.padding(8.dp),
-                            selected = currentScreen == HomeScreen.Feed
+                            selected = currentRoute == AppRoutes.HOME_FEED
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.all),
@@ -169,34 +156,25 @@ fun HomeScreen(
     val navController = rememberNavController()
     val navigationViewModel: NavigationViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = backStackEntry?.destination?.route ?: HomeScreen.Feed.name
+    val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
 
     // Define main screen routes (anything else will be considered settings-related)
-    val mainScreenRoutes = listOf(
-        HomeScreen.Feed.name,
-        // "All",
-        // "Browse",
-        // "Article Detail Screen", etc...
-    )
-    // Check if current route is a main screen
-    val isMainScreen = currentRoute in mainScreenRoutes
+    val isSettingsRoute = AppRoutes.isSettingsRoute(currentRoute)
 
     // Set NavController in NavigationViewModel
     navigationViewModel.setNavController(navController)
 
     Scaffold(
         topBar = {
-            if (isMainScreen) {
+            if (!isSettingsRoute) {
                 TopAppBarPR(
+                    navigationViewModel = navigationViewModel,
                     drawerState = drawerState
                 )
             } else {
                 SettingsTopAppBar(
                     title = stringResource(
-                        HomeScreen.valueOf(
-                            backStackEntry?.destination?.route
-                                ?: HomeScreen.Feed.name
-                        ).title
+                        AppRoutes.getTitleResId(currentRoute)
                     ),
                     onBackClicked = { navigationViewModel.navigateUp() }
                 )
@@ -205,32 +183,45 @@ fun HomeScreen(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = HomeScreen.Feed.name,
+            startDestination = AppRoutes.HOME_FEED,
             modifier = Modifier.padding(innerPadding),
             enterTransition = { fadeIn(animationSpec = tween(500)) },
             exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
-            composable(route = HomeScreen.Feed.name) {
+            composable(route = AppRoutes.HOME_FEED) {
                 FeedScreen(navigationViewModel)
             }
-            composable(route = HomeScreen.EditAccount.name) {
+            composable(route = AppRoutes.HOME_ALL) {
+                // AllScreen(navigationViewModel)
+            }
+            composable(route = AppRoutes.HOME_BROWSE) {
+                // BrowseScreen(navigationViewModel)
+            }
+            composable(route = AppRoutes.SETTINGS_EDIT_ACCOUNT) {
                 EditAccountScreen()
             }
-            composable(route = HomeScreen.Filters.name) {
+            composable(route = AppRoutes.SETTINGS_FILTERS) {
                 FiltersScreen()
             }
-            composable(route = HomeScreen.Saved.name) {
+            composable(route = AppRoutes.SETTINGS_SAVED) {
                 SavedScreen()
             }
-            composable(route = HomeScreen.Support.name) {
+            composable(route = AppRoutes.SETTINGS_SUPPORT) {
                 SupportScreen()
             }
-            composable(route = HomeScreen.About.name) {
+            composable(route = AppRoutes.SETTINGS_ABOUT) {
                 AboutScreen()
             }
-            composable(route = "article/{articleId}", arguments = listOf(navArgument("articleId"){type =
-                NavType.StringType})) {backStackEntry -> val articleId = backStackEntry.arguments?.getString("articleId")
-            ArticlePage(articleId = articleId)}
+            composable(
+                route = AppRoutes.ARTICLE_DETAILS,
+                arguments = listOf(navArgument("articleId") {
+                    type =
+                        NavType.StringType
+                })
+            ) { backStackEntry ->
+                val articleId = backStackEntry.arguments?.getString("articleId")
+                ArticlePage(articleId = articleId)
+            }
         }
     }
 }

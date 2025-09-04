@@ -34,7 +34,7 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navController?.popBackStack()
     }
 
-    fun markClicked(articleId: Int){
+    fun markClicked(articleId: Int) {
         _clickedArticles[articleId] = true
     }
 }

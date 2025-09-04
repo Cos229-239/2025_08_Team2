@@ -1,9 +1,5 @@
 package com.example.ravengamingnews.ui
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,26 +16,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHost
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import com.example.ravengamingnews.HomeScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ravengamingnews.data.TempDataSource
+import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
-
 
 
 @Composable
@@ -50,8 +35,8 @@ fun ArticleCard(
     articleDate: String,
     wasClicked: Boolean,
     onClick: () -> Unit
-){
-    val articleCardColor = if(wasClicked) MaterialTheme.colorScheme.tertiary
+) {
+    val articleCardColor = if (wasClicked) MaterialTheme.colorScheme.tertiary
     else MaterialTheme.colorScheme.primaryContainer
     Card(
         modifier = Modifier
@@ -66,11 +51,11 @@ fun ArticleCard(
             .cardColors(
                 containerColor = articleCardColor
             )
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp),
-        ){
+        ) {
             Text(
                 text = articleTitle,
                 style = MaterialTheme.typography.headlineLarge,
@@ -97,8 +82,8 @@ fun ArticleCard(
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(
-                    modifier = Modifier.height(12.dp)
-                    )
+                modifier = Modifier.height(12.dp)
+            )
             Text(
                 text = articleDate,
                 style = MaterialTheme.typography.labelSmall,
@@ -110,39 +95,43 @@ fun ArticleCard(
 }
 
 @Composable
-fun FeedScreen(navigationViewModel: NavigationViewModel? = null
-){
-    val clickedArticles = navigationViewModel?.clickedArticles
-
+fun FeedScreen(
+    navigationViewModel: NavigationViewModel = hiltViewModel()
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
         verticalArrangement = Arrangement
             .spacedBy(8.dp)
-    ){
-            items(TempDataSource.fakeArticleList) { item ->
-                val isClicked = navigationViewModel?.clickedArticles[item.id] == true
+    ) {
+        items(TempDataSource.fakeArticleList) { item ->
+            val isClicked = navigationViewModel.clickedArticles[item.id] == true
 
-                ArticleCard(
-                    item.title,
-                    item.author,
-                    item.summary,
-                    item.date,
-                    wasClicked = isClicked,
-                    onClick = {
-                       navigationViewModel?.markClicked(item.id)
-                        navigationViewModel?.navigateTo("article/${item.id}")
-                    }
-                )
-            }
+            ArticleCard(
+                item.title,
+                item.author,
+                item.summary,
+                item.date,
+                wasClicked = isClicked,
+                onClick = {
+                    navigationViewModel.markClicked(item.id)
+                    navigationViewModel.navigateTo(
+                        AppRoutes.ARTICLE_DETAILS.replace(
+                            "{articleId}",
+                            item.id.toString()
+                        )
+                    )
+                }
+            )
         }
     }
+}
 
 @Preview
 @Composable
 fun FeedScreenPreview() {
     RavenGamingNewsTheme {
-           FeedScreen()
+        FeedScreen()
     }
 }

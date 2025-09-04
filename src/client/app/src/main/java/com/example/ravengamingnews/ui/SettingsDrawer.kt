@@ -36,8 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ravengamingnews.AuthViewModel
-import com.example.ravengamingnews.HomeScreen
 import com.example.ravengamingnews.R
+import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.components.ButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
@@ -116,14 +116,14 @@ private fun MainSettingsDrawerContent(
             text = stringResource(R.string.account),
             onClick = {
                 scope.launch { drawerState.close() }
-                navigationViewModel.navigateTo(HomeScreen.EditAccount.name)
+                navigationViewModel.navigateTo(AppRoutes.SETTINGS_EDIT_ACCOUNT)
             }
         )
         SettingsButton(
             text = stringResource(R.string.filters),
             onClick = {
                 scope.launch { drawerState.close() }
-                navigationViewModel.navigateTo(HomeScreen.Filters.name)
+                navigationViewModel.navigateTo(AppRoutes.SETTINGS_FILTERS)
             }
         )
         SettingsButton(
@@ -141,7 +141,7 @@ private fun MainSettingsDrawerContent(
             text = stringResource(R.string.saved),
             onClick = {
                 scope.launch { drawerState.close() }
-                navigationViewModel.navigateTo(HomeScreen.Saved.name)
+                navigationViewModel.navigateTo(AppRoutes.SETTINGS_SAVED)
             }
         )
     }
@@ -165,7 +165,7 @@ private fun BottomDrawerSection(
             style = MaterialTheme.typography.titleLarge,
             onClick = {
                 scope.launch { drawerState.close() }
-                navigationViewModel.navigateTo(HomeScreen.Support.name)
+                navigationViewModel.navigateTo(AppRoutes.SETTINGS_SUPPORT)
             }
         )
         SettingsButton(
@@ -173,7 +173,7 @@ private fun BottomDrawerSection(
             style = MaterialTheme.typography.titleLarge,
             onClick = {
                 scope.launch { drawerState.close() }
-                navigationViewModel.navigateTo(HomeScreen.About.name)
+                navigationViewModel.navigateTo(AppRoutes.SETTINGS_ABOUT)
             }
         )
         Spacer(modifier = Modifier.height(24.dp))
