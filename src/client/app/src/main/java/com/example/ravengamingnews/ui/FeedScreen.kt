@@ -1,5 +1,8 @@
 package com.example.ravengamingnews.ui
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -27,7 +32,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import com.example.ravengamingnews.HomeScreen
 import com.example.ravengamingnews.data.TempDataSource
+import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 
@@ -100,7 +110,9 @@ fun ArticleCard(
 }
 
 @Composable
-fun FeedScreen(){
+fun FeedScreen(navigationViewModel: NavigationViewModel? = null
+){
+    val clickedArticles = navigationViewModel?.clickedArticles
 
     LazyColumn(
         modifier = Modifier
@@ -110,17 +122,17 @@ fun FeedScreen(){
             .spacedBy(8.dp)
     ){
             items(TempDataSource.fakeArticleList) { item ->
-
-                var wasClicked by remember { mutableStateOf(false)}
+                val isClicked = navigationViewModel?.clickedArticles[item.id] == true
 
                 ArticleCard(
                     item.title,
                     item.author,
                     item.summary,
                     item.date,
-                    wasClicked,
+                    wasClicked = isClicked,
                     onClick = {
-                        wasClicked = true
+                       navigationViewModel?.markClicked(item.id)
+                        navigationViewModel?.navigateTo("article/${item.id}")
                     }
                 )
             }
