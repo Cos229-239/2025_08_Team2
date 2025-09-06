@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ravengamingnews.navigation.NavigationViewModel
+import com.example.ravengamingnews.ui.CreateAccountScreen
 import com.example.ravengamingnews.ui.NoAccountScreen
 import com.example.ravengamingnews.ui.LoginScreen
 import com.example.ravengamingnews.ui.SettingsDrawer
@@ -102,14 +103,21 @@ fun LoginFlow() {
             startDestination = "login",
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable("no_account") {
+                NoAccountScreen(
+                    onSignup = { navigationViewModel.navigateTo("create_account") },
+                    onContinueAsGuest = { authViewModel.continueAsGuest() },
+                    onBackToLogin = { navigationViewModel.navigateTo("login") }
+                )
+            }
             composable("login") {
                 LoginScreen(
                     onLoginSuccess = { authViewModel.login() },
-                    onCreateAccountClick = { navigationViewModel.navigateTo("create_account") }
+                    onCreateAccountClick = { navigationViewModel.navigateTo("no_account") }
                 )
             }
             composable("create_account") {
-                NoAccountScreen(
+                CreateAccountScreen(
                     onAccountCreated = { authViewModel.login() },
                     onContinueAsGuest = { authViewModel.continueAsGuest() }
                 )

@@ -3,7 +3,7 @@
     <string name="feed">Feed</string>
     <string name="settings">Settings</string>
     <string name="login">Login</string>
-    <string name="create_account">Create Account</string>
+    <string name="sign_up">Sign Up</string>
     <string name="edit_account">Edit Account</string>
     <string name="temp_router">Router</string>
     <string name="email">EMAIL</string>
@@ -20,4 +20,6 @@
     <string name="all">All</string>
     <string name="browse">Browse</string>
     <string name="continue_without_account">Continue Without Account</string>
+    <string name="no_account_prompt">If you don\'t have an account, you can create a free account or you can browse the app without an account.\n\nBe aware browsing without an account will not sync your preferences across devices.</string>
+    <string name="back_to_login">BACK TO LOGIN</string>
 </resources>
