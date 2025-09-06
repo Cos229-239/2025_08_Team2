@@ -16,15 +16,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.ravengamingnews.data.TempDataSource
 import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
+import com.example.ravengamingnews.utils.toFormattedString
+import kotlin.time.Instant
 
 
 @Composable
@@ -32,7 +36,7 @@ fun ArticleCard(
     articleTitle: String,
     articleAuthor: String,
     articlePreview: String,
-    articleDate: String,
+    articleDate: Instant,
     wasClicked: Boolean,
     onClick: () -> Unit
 ) {
@@ -85,7 +89,7 @@ fun ArticleCard(
                 modifier = Modifier.height(12.dp)
             )
             Text(
-                text = articleDate,
+                text = articleDate.toFormattedString(LocalContext.current),
                 style = MaterialTheme.typography.labelSmall,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
@@ -96,8 +100,26 @@ fun ArticleCard(
 
 @Composable
 fun FeedScreen(
-    navigationViewModel: NavigationViewModel = hiltViewModel()
+    navigationViewModel: NavigationViewModel = hiltViewModel(),
+    articlesViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
+    val articleList = articlesViewModel.articleList.collectAsState(initial = listOf()).value
+    val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
+
+    if (articleList.isNullOrEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = "No articles available.",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+        return
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -105,9 +127,8 @@ fun FeedScreen(
         verticalArrangement = Arrangement
             .spacedBy(8.dp)
     ) {
-        items(TempDataSource.fakeArticleList) { item ->
-            val isClicked = navigationViewModel.clickedArticles[item.id] == true
-
+        items(items = articleList) { item ->
+            val isClicked = clickedArticles[item.id] == true
             ArticleCard(
                 item.title,
                 item.author,
@@ -115,7 +136,7 @@ fun FeedScreen(
                 item.date,
                 wasClicked = isClicked,
                 onClick = {
-                    navigationViewModel.markClicked(item.id)
+                    articlesViewModel.markArticleClicked(item.id)
                     navigationViewModel.navigateTo(
                         AppRoutes.ARTICLE_DETAILS.replace(
                             "{articleId}",

@@ -5,9 +5,11 @@ This folder is for all things Android Client Related
 # Instructions
 
 - Open the `client` folder in Android Studio.
-- Click the `Run` or `Debug` button Shift+F10 for run.
-- Profit (Should take a bit to build and start the emulator.)
+- Edit your local.properties file to include your `SUPABASE_PUBLISHABLE_KEY` and `SUPABASE_URL`.
+```
+# local.properties
+SUPABASE_PUBLISHABLE_KEY=<ask me for it>
+SUPABASE_URL=https://btutbkqrerypsszdsrrw.supabase.co
+```
+- Run the app on an emulator or physical device.
 
-# TODO
-
-Any more stuff...

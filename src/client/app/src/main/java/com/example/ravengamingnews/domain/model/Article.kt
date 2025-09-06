@@ -1,15 +1,14 @@
-package com.example.ravengamingnews.data
+package com.example.ravengamingnews.domain.model
 
-/**
- * Data class representing a news article.
- */
+import kotlin.time.Instant
+
 data class Article(
     val id: Int,
     val title: String,
     val summary: String,
     val content: String,
     val author: String,
-    val date: String,
+    val date: Instant,
     val game: String,
-    val topic: String,
+    val topic:String,
 )

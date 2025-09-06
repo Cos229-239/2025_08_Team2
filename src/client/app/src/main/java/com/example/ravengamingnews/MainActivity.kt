@@ -32,9 +32,13 @@ import com.example.ravengamingnews.ui.LoginScreen
 import com.example.ravengamingnews.ui.SettingsDrawer
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.jan.supabase.SupabaseClient
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var supabaseClient: SupabaseClient
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
