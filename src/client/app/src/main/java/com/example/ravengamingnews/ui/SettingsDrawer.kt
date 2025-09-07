@@ -176,7 +176,6 @@ private fun BottomDrawerSection(
         Spacer(modifier = Modifier.height(24.dp))
 
         val buttonText =
-            // This is a placeholder; replace `true` with actual authentication state check
             if (settingsDrawerViewModel.isSignedIn()) stringResource(
                 R.string.sign_out
             ) else stringResource(R.string.login)

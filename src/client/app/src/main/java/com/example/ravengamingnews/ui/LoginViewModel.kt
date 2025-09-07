@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(
                 }
 
                 else -> {
-                    message.emit("Login failed.")
+                    authMessage.emit("Login failed.")
                 }
             }
         }
