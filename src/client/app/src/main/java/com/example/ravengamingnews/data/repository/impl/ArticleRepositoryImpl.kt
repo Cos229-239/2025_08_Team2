@@ -4,6 +4,7 @@ import com.example.ravengamingnews.data.ArticleWithGameDto
 import com.example.ravengamingnews.data.ArticleRepository
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -25,7 +26,11 @@ class ArticleRepositoryImpl @Inject constructor(
                             )
                         """
                     )
-                ).decodeList<ArticleWithGameDto>()
+                )
+                {
+                    order("date", Order.DESCENDING)
+                }
+                .decodeList<ArticleWithGameDto>()
             result
         }
     }
