@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,39 +25,45 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.ravengamingnews.data.AuthRepository
+import com.example.ravengamingnews.domain.model.AuthState
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.CreateAccountScreen
-import com.example.ravengamingnews.ui.NoAccountScreen
 import com.example.ravengamingnews.ui.LoginScreen
+import com.example.ravengamingnews.ui.NoAccountScreen
 import com.example.ravengamingnews.ui.SettingsDrawer
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var supabaseClient: SupabaseClient
-    private val authViewModel: AuthViewModel by viewModels()
+
+    @Inject
+    lateinit var authRepository: AuthRepository
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val authState by authRepository.authState.collectAsState(AuthState.Initializing)
             RavenGamingNewsTheme {
-                val authState by authViewModel.authState.collectAsState()
-                when {
-                    authState.isLoading -> {
+                when (authState) {
+                    AuthState.Initializing -> {
                         LoadingScreen()
                     }
 
-                    authState.isLoggedIn || authState.continuedAsGuest -> {
+                    AuthState.Authenticated -> {
                         MainApp()
                     }
 
                     else -> {
-                        LoginFlow()
+                        LoginFlow(authRepository)
                     }
                 }
             }
@@ -90,16 +96,16 @@ fun MainApp() {
 }
 
 @Composable
-fun LoginFlow() {
+fun LoginFlow(authRepository: AuthRepository) {
     val navController = rememberNavController()
     val navigationViewModel: NavigationViewModel = hiltViewModel()
-    val authViewModel: AuthViewModel = hiltViewModel()
 
     // Set the NavController in the NavigationViewModel
     remember {
         navigationViewModel.setNavController(navController)
         true
     }
+    val scope = rememberCoroutineScope()
 
     Scaffold { innerPadding ->
         NavHost(
@@ -110,20 +116,27 @@ fun LoginFlow() {
             composable("no_account") {
                 NoAccountScreen(
                     onSignup = { navigationViewModel.navigateTo("create_account") },
-                    onContinueAsGuest = { authViewModel.continueAsGuest() },
+                    onContinueAsGuest = {
+                        scope.launch {
+                            authRepository.continueAsGuest()
+                        }
+                    },
                     onBackToLogin = { navigationViewModel.navigateTo("login") }
                 )
             }
             composable("login") {
                 LoginScreen(
-                    onLoginSuccess = { authViewModel.login() },
                     onCreateAccountClick = { navigationViewModel.navigateTo("no_account") }
                 )
             }
             composable("create_account") {
                 CreateAccountScreen(
-                    onAccountCreated = { authViewModel.login() },
-                    onContinueAsGuest = { authViewModel.continueAsGuest() }
+                    onAccountCreated = { },
+                    onContinueAsGuest = {
+                        scope.launch {
+                            authRepository.continueAsGuest()
+                        }
+                    },
                 )
             }
         }

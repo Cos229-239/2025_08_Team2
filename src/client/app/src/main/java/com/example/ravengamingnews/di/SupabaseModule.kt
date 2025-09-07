@@ -7,9 +7,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
-//import io.github.jan.supabase.auth.Auth
-//import io.github.jan.supabase.auth.FlowType
-//import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.FlowType
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 //import io.github.jan.supabase.storage.Storage
@@ -29,6 +29,11 @@ object SupabaseModule {
             supabaseKey = BuildConfig.SUPABASE_PUBLISHABLE_KEY
         ) {
             install(Postgrest)
+            install(Auth) {
+                flowType = FlowType.PKCE
+                scheme = "app"
+                host = "supabase.com"
+            }
         }
     }
 
@@ -38,11 +43,11 @@ object SupabaseModule {
         return client.postgrest
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideSupabaseGoTrue(client: SupabaseClient): Auth {
-//        return client.auth
-//    }
+    @Provides
+    @Singleton
+    fun provideSupabaseGoTrue(client: SupabaseClient): Auth {
+        return client.auth
+    }
 
 
 //    @Provides
