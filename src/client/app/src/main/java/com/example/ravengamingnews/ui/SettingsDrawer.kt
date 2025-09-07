@@ -22,8 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -35,7 +33,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.ravengamingnews.AuthViewModel
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
@@ -47,6 +44,7 @@ import kotlinx.coroutines.launch
 fun SettingsDrawer(
     drawerState: DrawerState,
     modifier: Modifier = Modifier,
+    settingsDrawerViewModel: SettingsDrawerViewModel = hiltViewModel(),
 ) {
     ModalDrawerSheet(
         drawerContainerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -63,7 +61,8 @@ fun SettingsDrawer(
             Spacer(modifier = Modifier.weight(1f))
             BottomDrawerSection(
                 drawerState = drawerState,
-                modifier = modifier
+                modifier = modifier,
+                settingsDrawerViewModel = settingsDrawerViewModel
             )
         }
     }
@@ -151,12 +150,10 @@ private fun MainSettingsDrawerContent(
 private fun BottomDrawerSection(
     drawerState: DrawerState,
     modifier: Modifier = Modifier,
+    settingsDrawerViewModel: SettingsDrawerViewModel
 ) {
-    val authViewModel: AuthViewModel = hiltViewModel()
     val navigationViewModel: NavigationViewModel = hiltViewModel()
-    val authState by authViewModel.authState.collectAsState()
     val scope = rememberCoroutineScope()
-
     Column(
         modifier = modifier.padding(start = 16.dp, top = 2.dp, bottom = 32.dp)
     ) {
@@ -179,12 +176,15 @@ private fun BottomDrawerSection(
         Spacer(modifier = Modifier.height(24.dp))
 
         val buttonText =
-            if (authState.isLoggedIn) stringResource(R.string.sign_out) else stringResource(R.string.login)
+            // This is a placeholder; replace `true` with actual authentication state check
+            if (settingsDrawerViewModel.isSignedIn()) stringResource(
+                R.string.sign_out
+            ) else stringResource(R.string.login)
         ButtonPR(
             text = buttonText,
             onClick = {
                 scope.launch { drawerState.close() }
-                authViewModel.logout()
+                settingsDrawerViewModel.signOut()
             },
             modifier = Modifier
                 .padding(16.dp, end = 32.dp)

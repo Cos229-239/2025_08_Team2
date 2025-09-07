@@ -2,19 +2,17 @@ package com.example.ravengamingnews.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ravengamingnews.data.ArticleRepository
-import com.example.ravengamingnews.data.ArticleWithGameDto
 import com.example.ravengamingnews.domain.model.Article
+import com.example.ravengamingnews.domain.usecase.GetArticlesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Instant
 
 @HiltViewModel
 class ArticleListViewModel @Inject constructor(
-    private val articleRepository: ArticleRepository
+    private val getArticlesUseCase: GetArticlesUseCase,
 ) : ViewModel() {
     private val _clickedArticles = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val clickedArticles: Flow<Map<Int, Boolean>> = _clickedArticles
@@ -28,8 +26,15 @@ class ArticleListViewModel @Inject constructor(
 
     fun getArticles() {
         viewModelScope.launch {
-            val articles = articleRepository.getArticles()
-            _articles.value = articles?.map { it.asDomainModel() }
+            when (val result = getArticlesUseCase.execute(input = Unit)) {
+                is GetArticlesUseCase.Output.Success -> {
+                    _articles.emit(result.articles)
+                }
+
+                is GetArticlesUseCase.Output.Failure -> {
+
+                }
+            }
         }
     }
 
@@ -40,15 +45,4 @@ class ArticleListViewModel @Inject constructor(
     fun markArticleClicked(articleId: Int) {
         _clickedArticles.value = _clickedArticles.value + (articleId to true)
     }
-
-    private fun ArticleWithGameDto.asDomainModel() = Article(
-        id = this.id,
-        title = this.title,
-        summary = this.summary,
-        content = this.content,
-        author = this.author,
-        date = Instant.Companion.parse(this.date),
-        game = this.game.name,
-        topic = this.topic
-    )
 }
