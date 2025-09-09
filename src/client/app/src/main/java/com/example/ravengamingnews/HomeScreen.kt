@@ -47,6 +47,7 @@ import com.example.ravengamingnews.ui.SupportScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
+import com.example.ravengamingnews.ui.ArticleListViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -155,6 +156,7 @@ fun HomeScreen(
 ) {
     val navController = rememberNavController()
     val navigationViewModel: NavigationViewModel = hiltViewModel()
+    val articleListViewModel: ArticleListViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
 
@@ -189,7 +191,7 @@ fun HomeScreen(
             exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
             composable(route = AppRoutes.HOME_FEED) {
-                FeedScreen(navigationViewModel)
+                FeedScreen(navigationViewModel, articleListViewModel)
             }
             composable(route = AppRoutes.HOME_ALL) {
                 // AllScreen(navigationViewModel)
@@ -220,7 +222,7 @@ fun HomeScreen(
                 })
             ) { backStackEntry ->
                 val articleId = backStackEntry.arguments?.getString("articleId")
-                ArticlePage(articleId = articleId)
+                ArticlePage(articleId = articleId, articleListViewModel)
             }
         }
     }

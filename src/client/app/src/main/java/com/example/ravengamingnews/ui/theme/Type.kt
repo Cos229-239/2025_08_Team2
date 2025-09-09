@@ -74,9 +74,21 @@ val Typography = Typography(
     ),
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 16.sp,
+        lineHeight = 22.sp,
+        letterSpacing = 0.5.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.25.sp
     ),
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
