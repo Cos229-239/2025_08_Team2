@@ -33,7 +33,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
@@ -114,7 +116,8 @@ fun OutlinedTextFieldPR(
 fun ButtonPR(
     modifier: Modifier = Modifier,
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    fontSize: TextUnit = 16.sp
 ) {
     Button(
         onClick = onClick,
@@ -130,7 +133,10 @@ fun ButtonPR(
         Text(
             text = text.uppercase(),
             color = MaterialTheme.colorScheme.onPrimary,
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.labelMedium,
+            fontSize = fontSize,
+            modifier = Modifier
+                .padding(4.dp)
         )
     }
 }
