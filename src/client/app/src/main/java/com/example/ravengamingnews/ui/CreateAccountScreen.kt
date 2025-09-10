@@ -1,13 +1,28 @@
 package com.example.ravengamingnews.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.components.ButtonPR
+import com.example.ravengamingnews.ui.components.LogoImagePR
+import com.example.ravengamingnews.ui.components.OutlinedTextFieldPR
 import com.example.ravengamingnews.ui.components.TextOnlyButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
@@ -17,22 +32,89 @@ fun CreateAccountScreen(
     onAccountCreated: () -> Unit = {},
     onContinueAsGuest: () -> Unit = {},
 ) {
-    Column(
-        modifier = modifier
+
+    var email by remember { mutableStateOf(value = "") }
+    var password by remember { mutableStateOf(value = "") }
+    var fName by remember { mutableStateOf(value = "") }
+    var lName by remember { mutableStateOf(value = "") }
+    var dateOfBirth by remember { mutableStateOf(value = "")}
+
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(R.string.sign_up),
-        )
-        ButtonPR(
-            text = stringResource(R.string.sign_up),
-            onClick = onAccountCreated, // TODO: Needs to actually route to the create account screen
-            modifier = modifier
-        )
-        TextOnlyButtonPR(
-            text = stringResource(R.string.continue_without_account),
-            onClick = onContinueAsGuest,
-            modifier = modifier
-        )
+        item{ LogoImagePR(
+            modifier = Modifier
+                .size(250.dp)
+                .padding(0.dp, 0.dp, 0.dp, 0.dp)
+        ) }
+        item{
+            OutlinedTextFieldPR(
+                label = "EMAIL ADDRESS",
+                value = email,
+                isError = false,
+                onValueChanged = {},
+                onKeyboardAction = {}
+            )
+        }
+
+        item{
+            OutlinedTextFieldPR(
+                label = stringResource(R.string.password),
+                value = password,
+                isError = false,
+                onValueChanged = {},
+                onKeyboardAction = {},
+                isPassword = true
+            )
+        }
+        item{
+            OutlinedTextFieldPR(
+                label = "CONFIRM PASSWORD",
+                value = password,
+                isError = false,
+                onValueChanged = {},
+                onKeyboardAction = {},
+                isPassword = true
+            )
+        }
+        item{
+            OutlinedTextFieldPR(
+                label = "FIRST NAME",
+                value = fName,
+                onValueChanged = {},
+                onKeyboardAction = {}
+            )
+        }
+
+        item{
+            OutlinedTextFieldPR(
+                label = "LAST NAME",
+                value = lName,
+                onValueChanged = {},
+                onKeyboardAction = {}
+            )
+        }
+        item{
+            OutlinedTextFieldPR(
+                label = "DATE OF BIRTH",
+                value = dateOfBirth,
+                onValueChanged = {},
+                onKeyboardAction = {}
+            )
+        }
+        item{
+            ButtonPR(
+                modifier = Modifier,
+                text = "CREATE ACCOUNT",
+                onClick = onContinueAsGuest,
+                fontSize = 16.sp
+            )
+        }
     }
 }
 
@@ -40,6 +122,6 @@ fun CreateAccountScreen(
 @Composable
 fun CreateAccountScreenPreview() {
     RavenGamingNewsTheme {
-        NoAccountScreen()
+        CreateAccountScreen()
     }
 }
