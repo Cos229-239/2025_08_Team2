@@ -233,7 +233,7 @@ fun HomeScreen(
 fun SettingsTopAppBarPreview() {
     RavenGamingNewsTheme {
         SettingsTopAppBar(
-            title = stringResource(R.string.edit_account),
+            title = stringResource(R.string.account),
             onBackClicked = {}
         )
     }
