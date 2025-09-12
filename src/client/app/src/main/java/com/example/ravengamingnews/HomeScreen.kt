@@ -96,8 +96,9 @@ fun TopAppBarPR(
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.browse),
-                            onClick = {},
-                            modifier.padding(8.dp)
+                            onClick = { navigationViewModel.navigateTo(AppRoutes.HOME_BROWSE) },
+                            modifier.padding(8.dp),
+                            selected = currentRoute == AppRoutes.HOME_BROWSE
                         )
                     }
 
@@ -197,7 +198,7 @@ fun HomeScreen(
                 // AllScreen(navigationViewModel)
             }
             composable(route = AppRoutes.HOME_BROWSE) {
-                // BrowseScreen(navigationViewModel)
+                BrowseScreen()
             }
             composable(route = AppRoutes.SETTINGS_EDIT_ACCOUNT) {
                 EditAccountScreen()
