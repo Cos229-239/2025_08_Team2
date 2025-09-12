@@ -63,8 +63,17 @@ fun OutlinedTextFieldPR(
     isError: Boolean = false,
     errorMessage: String? = null,
     keyboardOptions: KeyboardOptions? = null,
-    isPassword: Boolean = false
-) {
+    isPassword: Boolean = false,
+    isEnabled: Boolean = true,
+    isEditable: Boolean = true,
+
+    ) {
+    val textFieldColors = TextFieldDefaults.colors(
+        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+        focusedContainerColor = MaterialTheme.colorScheme.background,
+        errorContainerColor = MaterialTheme.colorScheme.background,
+    )
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -77,12 +86,7 @@ fun OutlinedTextFieldPR(
             shape = RoundedCornerShape(10.dp),
             modifier = modifier
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                errorContainerColor = MaterialTheme.colorScheme.background,
-            ),
+            colors = textFieldColors,
             onValueChange = onValueChanged,
             label = {
                 Text(text = label)
@@ -96,6 +100,8 @@ fun OutlinedTextFieldPR(
                 onDone = { onKeyboardAction() }
             ),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            enabled = isEnabled,
+            readOnly = !isEditable
         )
         if (isError && errorMessage != null) {
             Text(

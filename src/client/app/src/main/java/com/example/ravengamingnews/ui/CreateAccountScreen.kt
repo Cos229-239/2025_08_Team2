@@ -1,13 +1,10 @@
 package com.example.ravengamingnews.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +20,6 @@ import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.components.ButtonPR
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.OutlinedTextFieldPR
-import com.example.ravengamingnews.ui.components.TextOnlyButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
