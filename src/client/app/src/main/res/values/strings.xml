@@ -27,7 +27,6 @@
     <string name="confirm_password">CONFIRM PASSWORD</string>
     <string name="email_address">EMAIL ADDRESS</string>
     <string name="create_account">CREATE ACCOUNT</string>
-    <string name="account_created_successfully">Account created successfully</string>
     <string name="fix_sign_up_errors">Fix the errors before continuing.</string>
     <string name="account_created_failure">Failed to create account. Please try again.</string>
     <string name="date_of_birth_is_required">Date of birth is required</string>
