@@ -41,8 +41,11 @@ class CreateAccountViewModel @Inject constructor(
     private val _dateOfBirth = MutableStateFlow("")
     val dateOfBirth: StateFlow<String> = _dateOfBirth
 
-    private val _signUpMessage = MutableStateFlow("")
-    val signUpMessage: StateFlow<String> = _signUpMessage
+    private val _signUpErrorMessage = MutableStateFlow("")
+    val signUpErrorMessage: StateFlow<String> = _signUpErrorMessage
+
+    private val _isSignUpSuccess = MutableStateFlow(false)
+    val isSignUpSuccess: StateFlow<Boolean> = _isSignUpSuccess
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -179,7 +182,7 @@ class CreateAccountViewModel @Inject constructor(
 
     fun onCreateAccount() {
         if (!validateAllFields()) {
-            _signUpMessage.value = context.getString(R.string.fix_sign_up_errors)
+            _signUpErrorMessage.value = context.getString(R.string.fix_sign_up_errors)
             return
         }
 
@@ -201,17 +204,17 @@ class CreateAccountViewModel @Inject constructor(
                 _isLoading.value = false
                 when (result) {
                     is SignUpUseCase.Output.Success -> {
-                        _signUpMessage.value = context.getString(R.string.account_created_successfully)
+                        _isSignUpSuccess.value = true
                     }
                     is SignUpUseCase.Output.Failure -> {
-                        _signUpMessage.value = context.getString(R.string.account_created_failure)
+                        _signUpErrorMessage.value = context.getString(R.string.account_created_failure)
                     }
                 }
             }
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Error creating account: ${e.message}")
             _isLoading.value = false
-            _signUpMessage.value = context.getString(R.string.account_created_failure)
+            _signUpErrorMessage.value = context.getString(R.string.account_created_failure)
         }
     }
 }

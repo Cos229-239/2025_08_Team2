@@ -48,7 +48,8 @@ fun CreateAccountScreen(
     val dateOfBirthError by viewModel.dateOfBirthError.collectAsState()
 
     val isLoading by viewModel.isLoading.collectAsState()
-    val signUpMessage by viewModel.signUpMessage.collectAsState()
+    val signUpErrorMessage by viewModel.signUpErrorMessage.collectAsState()
+    val isSignUpSuccess by viewModel.isSignUpSuccess.collectAsState()
 
     val context = LocalContext.current
     LazyColumn(
@@ -66,10 +67,10 @@ fun CreateAccountScreen(
             )
         }
 
-        if (signUpMessage.isNotEmpty()) {
+        if (signUpErrorMessage.isNotEmpty()) {
             item {
                 Text(
-                    text = signUpMessage,
+                    text = signUpErrorMessage,
                     modifier = Modifier.padding(8.dp),
                     color = MaterialTheme.colorScheme.error
                 )
@@ -161,15 +162,15 @@ fun CreateAccountScreen(
 
         item {
             TextOnlyButtonPR(
-                text = context.getString(R.string.continue_without_account),
+                text = stringResource(R.string.continue_without_account),
                 onClick = onContinueAsGuest
             )
         }
     }
 
     // Observe sign-up message changes to trigger navigation
-    androidx.compose.runtime.LaunchedEffect(signUpMessage) {
-        if (signUpMessage == context.getString(R.string.account_created_successfully)) {
+    androidx.compose.runtime.LaunchedEffect(signUpErrorMessage) {
+        if (isSignUpSuccess) {
             onAccountCreated()
         }
     }
