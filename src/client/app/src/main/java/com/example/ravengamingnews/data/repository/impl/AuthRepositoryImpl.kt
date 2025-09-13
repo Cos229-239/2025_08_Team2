@@ -122,12 +122,13 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val userData = user.userMetadata
 
-            val firstName = userData?.get("first_name")?.jsonPrimitive?.content ?: ""
-            val lastName = userData?.get("last_name")?.jsonPrimitive?.content ?: ""
-            val dateOfBirth = userData?.get("date_of_birth")?.jsonPrimitive?.content ?: ""
+            val firstName = userData?.get(UserMetadata.FIRST_NAME)?.jsonPrimitive?.content ?: ""
+            val lastName = userData?.get(UserMetadata.LAST_NAME)?.jsonPrimitive?.content ?: ""
+            val dateOfBirth = userData?.get(UserMetadata.DATE_OF_BIRTH)?.jsonPrimitive?.content
+                ?: throw IllegalStateException("Date of birth is required but was not found in user metadata")
 
             val filters = try {
-                val filtersJson = userData?.get("filters")
+                val filtersJson = userData[UserMetadata.FILTERS]
                 if (filtersJson != null) {
                     json.decodeFromJsonElement(UserFilters.serializer(), filtersJson)
                 } else {
@@ -141,7 +142,7 @@ class AuthRepositoryImpl @Inject constructor(
             UserMetadata(
                 firstName = firstName,
                 lastName = lastName,
-                dateOfBirth = if (dateOfBirth.isNotEmpty()) LocalDate.parse(dateOfBirth) else LocalDate(1970, 1, 1),
+                dateOfBirth = LocalDate.parse(dateOfBirth),
                 filters = filters
             )
         } catch (e: Exception) {
