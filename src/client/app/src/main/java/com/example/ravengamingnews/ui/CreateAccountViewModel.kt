@@ -191,7 +191,6 @@ class CreateAccountViewModel @Inject constructor(
                 val userData = UserSignUp(
                     email = _email.value.trim(),
                     password = _password.value,
-                    confirmPassword = _confirmPassword.value,
                     firstName = _firstName.value.trim(),
                     lastName = _lastName.value.trim(),
                     dateOfBirth = dateOfBirth

@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 data class UserSignUp(
     val email: String,
     val password: String,
-    val confirmPassword: String,
     val firstName: String,
     val lastName: String,
     val dateOfBirth: LocalDate

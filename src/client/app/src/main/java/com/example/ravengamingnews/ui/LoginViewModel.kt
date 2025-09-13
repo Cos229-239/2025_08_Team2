@@ -13,10 +13,10 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
 ) : ViewModel() {
-    private val _email = MutableStateFlow("user@patchraven.com")
+    private val _email = MutableStateFlow("")
     val email: Flow<String> = _email
 
-    private val _password = MutableStateFlow("user")
+    private val _password = MutableStateFlow("")
     val password: Flow<String> = _password
 
     private val _authMessage = MutableStateFlow("")
