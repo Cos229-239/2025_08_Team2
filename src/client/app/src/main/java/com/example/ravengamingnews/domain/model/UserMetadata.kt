@@ -17,6 +17,7 @@ data class UserMetadata(
         const val FILTERS = "filters"
     }
 }
+
 @Serializable
 data class UserFilters(
     val games: List<Int> = emptyList(),

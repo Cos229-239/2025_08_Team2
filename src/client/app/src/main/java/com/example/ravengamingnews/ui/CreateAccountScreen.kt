@@ -169,7 +169,7 @@ fun CreateAccountScreen(
     }
 
     // Observe sign-up message changes to trigger navigation
-    androidx.compose.runtime.LaunchedEffect(signUpErrorMessage) {
+    androidx.compose.runtime.LaunchedEffect(isSignUpSuccess) {
         if (isSignUpSuccess) {
             onAccountCreated()
         }
