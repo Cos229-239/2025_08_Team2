@@ -153,9 +153,6 @@ fun CreateAccountScreen(
                     text = stringResource(R.string.create_account),
                     onClick = {
                         viewModel.onCreateAccount()
-                        if (signUpMessage == context.getString(R.string.account_created_successfully)) {
-                            onAccountCreated()
-                        }
                     },
                     fontSize = 16.sp
                 )
@@ -167,6 +164,13 @@ fun CreateAccountScreen(
                 text = context.getString(R.string.continue_without_account),
                 onClick = onContinueAsGuest
             )
+        }
+    }
+
+    // Observe sign-up message changes to trigger navigation
+    androidx.compose.runtime.LaunchedEffect(signUpMessage) {
+        if (signUpMessage == context.getString(R.string.account_created_successfully)) {
+            onAccountCreated()
         }
     }
 }

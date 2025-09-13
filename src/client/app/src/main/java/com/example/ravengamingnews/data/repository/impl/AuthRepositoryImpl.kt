@@ -68,7 +68,7 @@ class AuthRepositoryImpl @Inject constructor(
                 filters = UserFilters() // default empty filters
             )
 
-            val metadataJson = json.encodeToString(metadata)
+            val metadataJson = json.encodeToString(UserMetadata.serializer(), metadata)
 
             auth.signUpWith(Email) {
                 this.email = email
@@ -99,7 +99,7 @@ class AuthRepositoryImpl @Inject constructor(
                     dateOfBirth = dateOfBirth
                 )
 
-                val metadataJson = json.encodeToString(updatedMetadata)
+                val metadataJson = json.encodeToString(UserMetadata.serializer(), updatedMetadata)
 
                 auth.updateUser {
                     this.email = email
@@ -154,7 +154,7 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val currentMetadata = getUserMetadata() ?: return false
             val updatedMetadata = currentMetadata.copy(filters = filters)
-            val metadataJson = json.encodeToString(updatedMetadata)
+            val metadataJson = json.encodeToString(UserMetadata.serializer(), updatedMetadata)
             auth.updateUser {
                 data = json.parseToJsonElement(metadataJson).jsonObject
             }
