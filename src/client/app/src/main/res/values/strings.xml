@@ -21,4 +21,21 @@
     <string name="continue_without_account">Continue Without Account</string>
     <string name="no_account_prompt">If you don\'t have an account, you can create a free account or you can browse the app without an account.\n\nBe aware browsing without an account will not sync your preferences across devices.</string>
     <string name="back_to_login">BACK TO LOGIN</string>
+
+    <!-- Game Names -->
+    <string name="game_1">League of Legends</string>
+    <string name="game_2">Heroes of the Storm</string>
+    <string name="game_3">Vainglory</string>
+    <string name="game_4">Smite</string>
+    <string name="game_5">Dota 2</string>
+
+    <!-- Topic Names -->
+    <string name="topic_1">Patch Notes</string>
+    <string name="topic_2">Game Updates</string>
+    <string name="topic_3">Cosmetics</string>
+    <string name="topic_4">Game Modes</string>
+
+    <!-- Fallback for unknown games/topics -->
+    <string name="unknown_game">Unknown Game</string>
+    <string name="unknown_topic">Unknown Topic</string>
 </resources>

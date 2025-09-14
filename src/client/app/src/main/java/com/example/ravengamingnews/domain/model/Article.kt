@@ -1,5 +1,6 @@
 package com.example.ravengamingnews.domain.model
 
+import com.example.ravengamingnews.data.TopicEnum
 import kotlin.time.Instant
 
 data class Article(
@@ -9,6 +10,8 @@ data class Article(
     val content: String,
     val author: String,
     val date: Instant,
-    val game: String,
-    val topic:String,
+    val gameId: Int,
+    val gameNameResId: Int, // Resource ID for localized game name
+    val topic: TopicEnum?,
+    val topicNameResId: Int?, // Resource ID for localized topic name
 )
