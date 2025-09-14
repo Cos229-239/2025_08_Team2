@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  * Data class representing a news article.
  */
 @Serializable
-data class ArticleWithGameDto(
+data class ArticleDto(
     @SerialName("id")
     val id: Int,
     @SerialName("created_at")
@@ -25,5 +25,5 @@ data class ArticleWithGameDto(
     @SerialName("game")
     val game: GameDto,
     @SerialName("topic")
-    val topic: String,
+    val topic: TopicEnum?,
 )
