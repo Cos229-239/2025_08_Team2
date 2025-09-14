@@ -26,8 +26,8 @@ object ResourceMapper {
      * @param topicId The topic ID from the API
      * @return The string resource ID for the localized topic name, or fallback if no mapping exists
      */
-    fun getTopicNameResourceId(topicId: TopicEnum?): Int {
-        return topicNameMap[topicId] ?: R.string.unknown_topic
+    fun getTopicNameResourceId(topicId: TopicEnum?): Int? {
+        return topicNameMap[topicId]
     }
 
     /**

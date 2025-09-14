@@ -24,6 +24,11 @@ data class ArticleDto(
     val date: String,
     @SerialName("game")
     val game: GameDto,
+    /**
+     * The topic of the article, which can be null if not specified.
+     * See [TopicEnum] for possible values.
+     * Null values should be handled appropriately in the UI as undefined or uncategorized.
+     */
     @SerialName("topic")
     val topic: TopicEnum?,
 )
