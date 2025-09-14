@@ -33,6 +33,6 @@ class GetArticlesUseCaseImpl @Inject constructor(
         gameId = this.game.id,
         gameNameResId = ResourceMapper.getGameNameResourceId(this.game.id),
         topic = this.topic,
-        topicNameResId = this.topic?.let { ResourceMapper.getTopicNameResourceId(it) }
+        topicNameResId = ResourceMapper.getTopicNameResourceId(this.topic)
     )
 }
