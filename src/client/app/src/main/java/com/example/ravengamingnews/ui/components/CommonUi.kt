@@ -33,7 +33,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
@@ -61,8 +63,17 @@ fun OutlinedTextFieldPR(
     isError: Boolean = false,
     errorMessage: String? = null,
     keyboardOptions: KeyboardOptions? = null,
-    isPassword: Boolean = false
-) {
+    isPassword: Boolean = false,
+    isEnabled: Boolean = true,
+    isEditable: Boolean = true,
+
+    ) {
+    val textFieldColors = TextFieldDefaults.colors(
+        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+        focusedContainerColor = MaterialTheme.colorScheme.background,
+        errorContainerColor = MaterialTheme.colorScheme.background,
+    )
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -75,12 +86,7 @@ fun OutlinedTextFieldPR(
             shape = RoundedCornerShape(10.dp),
             modifier = modifier
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                errorContainerColor = MaterialTheme.colorScheme.background,
-            ),
+            colors = textFieldColors,
             onValueChange = onValueChanged,
             label = {
                 Text(text = label)
@@ -94,6 +100,8 @@ fun OutlinedTextFieldPR(
                 onDone = { onKeyboardAction() }
             ),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            enabled = isEnabled,
+            readOnly = !isEditable
         )
         if (isError && errorMessage != null) {
             Text(
@@ -114,7 +122,8 @@ fun OutlinedTextFieldPR(
 fun ButtonPR(
     modifier: Modifier = Modifier,
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    fontSize: TextUnit = 16.sp
 ) {
     Button(
         onClick = onClick,
@@ -130,7 +139,10 @@ fun ButtonPR(
         Text(
             text = text.uppercase(),
             color = MaterialTheme.colorScheme.onPrimary,
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.labelMedium,
+            fontSize = fontSize,
+            modifier = Modifier
+                .padding(4.dp)
         )
     }
 }

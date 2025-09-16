@@ -22,7 +22,7 @@ object AppRoutes {
 
     fun getTitleResId(route: String): Int {
         return when (route) {
-            SETTINGS_EDIT_ACCOUNT -> R.string.edit_account
+            SETTINGS_EDIT_ACCOUNT -> R.string.account
             SETTINGS_FILTERS -> R.string.filters
             SETTINGS_SAVED -> R.string.saved
             SETTINGS_SUPPORT -> R.string.support

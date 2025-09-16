@@ -47,15 +47,16 @@ import com.example.ravengamingnews.ui.SupportScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
+import com.example.ravengamingnews.ui.ArticleListViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun TopAppBarPR(
+private fun TopAppBarPR(
     drawerState: DrawerState,
     modifier: Modifier = Modifier,
-    navigationViewModel: NavigationViewModel = hiltViewModel()
+    navigationViewModel: NavigationViewModel = hiltViewModel(),
+    navController: androidx.navigation.NavHostController
 ) {
-    val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
 
@@ -84,7 +85,7 @@ fun TopAppBarPR(
                     ) {
                         TopAppBarButtonPR(
                             text = stringResource(R.string.feed),
-                            onClick = { navigationViewModel.navigateTo(AppRoutes.HOME_FEED) },
+                            onClick = { navigationViewModel.navigateToMainTab(AppRoutes.HOME_FEED) },
                             modifier.padding(8.dp),
                             selected = currentRoute == AppRoutes.HOME_FEED
                         )
@@ -95,8 +96,9 @@ fun TopAppBarPR(
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.browse),
-                            onClick = {},
-                            modifier.padding(8.dp)
+                            onClick = { navigationViewModel.navigateToMainTab(AppRoutes.HOME_BROWSE) },
+                            modifier.padding(8.dp),
+                            selected = currentRoute == AppRoutes.HOME_BROWSE
                         )
                     }
 
@@ -114,7 +116,7 @@ fun TopAppBarPR(
 }
 
 @Composable
-fun SettingsTopAppBar(
+private fun SettingsTopAppBar(
     modifier: Modifier = Modifier,
     title: String,
     onBackClicked: () -> Unit,
@@ -155,6 +157,7 @@ fun HomeScreen(
 ) {
     val navController = rememberNavController()
     val navigationViewModel: NavigationViewModel = hiltViewModel()
+    val articleListViewModel: ArticleListViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
 
@@ -169,7 +172,8 @@ fun HomeScreen(
             if (!isSettingsRoute) {
                 TopAppBarPR(
                     navigationViewModel = navigationViewModel,
-                    drawerState = drawerState
+                    drawerState = drawerState,
+                    navController = navController
                 )
             } else {
                 SettingsTopAppBar(
@@ -189,13 +193,13 @@ fun HomeScreen(
             exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
             composable(route = AppRoutes.HOME_FEED) {
-                FeedScreen(navigationViewModel)
+                FeedScreen(navigationViewModel, articleListViewModel)
             }
             composable(route = AppRoutes.HOME_ALL) {
                 // AllScreen(navigationViewModel)
             }
             composable(route = AppRoutes.HOME_BROWSE) {
-                // BrowseScreen(navigationViewModel)
+                BrowseScreen()
             }
             composable(route = AppRoutes.SETTINGS_EDIT_ACCOUNT) {
                 EditAccountScreen()
@@ -220,7 +224,7 @@ fun HomeScreen(
                 })
             ) { backStackEntry ->
                 val articleId = backStackEntry.arguments?.getString("articleId")
-                ArticlePage(articleId = articleId)
+                ArticlePage(articleId = articleId, articleListViewModel)
             }
         }
     }
@@ -231,7 +235,7 @@ fun HomeScreen(
 fun SettingsTopAppBarPreview() {
     RavenGamingNewsTheme {
         SettingsTopAppBar(
-            title = stringResource(R.string.edit_account),
+            title = stringResource(R.string.account),
             onBackClicked = {}
         )
     }
@@ -242,7 +246,8 @@ fun SettingsTopAppBarPreview() {
 fun TopAppBarPreview() {
     RavenGamingNewsTheme {
         TopAppBarPR(
-            drawerState = DrawerState(initialValue = androidx.compose.material3.DrawerValue.Closed)
+            drawerState = DrawerState(initialValue = androidx.compose.material3.DrawerValue.Closed),
+            navController = rememberNavController()
         )
     }
 }

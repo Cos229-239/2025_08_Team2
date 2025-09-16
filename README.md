@@ -4,15 +4,11 @@
 
 Android app
 
-Location: `.\src\client`
+Location: `./src/client`
+## Getting Started
+
+View the [Client Folder](./src/client/)
 
 # Backend
 
-Database: (TBD, Postgres?)
-Web API / Site: (TBD, Elixir? or TypeScript / React?)
-
-Location: `.\src\backend`
-
----
-
-More to come...
+Supabase backend accessed via the client in the `./src/client` folder.
