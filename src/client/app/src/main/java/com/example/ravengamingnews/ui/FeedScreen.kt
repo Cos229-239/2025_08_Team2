@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -103,48 +104,54 @@ fun FeedScreen(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
-    val articleList = articlesViewModel.articleList.collectAsState(initial = listOf()).value
+    val articleList = articlesViewModel.articleList.collectAsState(initial = listOf()).value ?: listOf()
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
-
-    if (articleList.isNullOrEmpty()) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                text = "No articles available.",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-        return
-    }
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
-        verticalArrangement = Arrangement
-            .spacedBy(8.dp)
+    val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { articlesViewModel.getArticles() },
+        modifier = Modifier.fillMaxSize()
     ) {
-        items(items = articleList) { item ->
-            val isClicked = clickedArticles[item.id] == true
-            ArticleCard(
-                item.title,
-                item.author,
-                item.summary,
-                item.date,
-                wasClicked = isClicked,
-                onClick = {
-                    articlesViewModel.markArticleClicked(item.id)
-                    navigationViewModel.navigateTo(
-                        AppRoutes.ARTICLE_DETAILS.replace(
-                            "{articleId}",
-                            item.id.toString()
+//        if (articleList.isNullOrEmpty()) {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                verticalArrangement = Arrangement.Center,
+//            ) {
+//                Text(
+//                    text = "No articles available.",
+//                    style = MaterialTheme.typography.bodyLarge
+//                )
+//            }
+//            return
+//        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement
+                .spacedBy(8.dp)
+        ) {
+            items(items = articleList) { item ->
+                val isClicked = clickedArticles[item.id] == true
+                ArticleCard(
+                    item.title,
+                    item.author,
+                    item.summary,
+                    item.date,
+                    wasClicked = isClicked,
+                    onClick = {
+                        articlesViewModel.markArticleClicked(item.id)
+                        navigationViewModel.navigateTo(
+                            AppRoutes.ARTICLE_DETAILS.replace(
+                                "{articleId}",
+                                item.id.toString()
+                            )
                         )
-                    )
-                }
-            )
+                    }
+                )
+            }
         }
     }
 }
