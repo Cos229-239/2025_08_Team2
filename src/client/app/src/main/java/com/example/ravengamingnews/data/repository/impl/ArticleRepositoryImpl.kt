@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ArticleRepositoryImpl @Inject constructor(
     private val postgrest: Postgrest
 ) : ArticleRepository {
-    override suspend fun getArticles(): List<ArticleDto> {
+    override suspend fun getArticles(): List<ArticleDto>? {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("articles")
                 .select(
