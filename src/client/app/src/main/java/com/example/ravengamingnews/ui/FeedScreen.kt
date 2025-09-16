@@ -104,7 +104,8 @@ fun FeedScreen(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
-    val articleList = articlesViewModel.articleList.collectAsState(initial = listOf()).value ?: listOf()
+    val articleList =
+        articlesViewModel.articleList.collectAsState(initial = listOf()).value ?: listOf()
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
     val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
     PullToRefreshBox(
@@ -112,20 +113,6 @@ fun FeedScreen(
         onRefresh = { articlesViewModel.getArticles() },
         modifier = Modifier.fillMaxSize()
     ) {
-//        if (articleList.isNullOrEmpty()) {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp),
-//                verticalArrangement = Arrangement.Center,
-//            ) {
-//                Text(
-//                    text = "No articles available.",
-//                    style = MaterialTheme.typography.bodyLarge
-//                )
-//            }
-//            return
-//        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
