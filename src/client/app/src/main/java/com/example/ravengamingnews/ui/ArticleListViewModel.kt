@@ -18,8 +18,8 @@ class ArticleListViewModel @Inject constructor(
     private val _clickedArticles = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val clickedArticles: Flow<Map<Int, Boolean>> = _clickedArticles
 
-    private val _articles = MutableStateFlow<List<Article>?>(listOf())
-    val articleList: Flow<List<Article>?> = _articles
+    private val _articles = MutableStateFlow<List<Article>>(listOf())
+    val articleList: Flow<List<Article>> = _articles
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
@@ -34,18 +34,18 @@ class ArticleListViewModel @Inject constructor(
             when (val result = getArticlesUseCase.execute(input = Unit)) {
                 is GetArticlesUseCase.Output.Success -> {
                     _articles.emit(result.articles)
-                    _isRefreshing.value = false;
+                    _isRefreshing.value = false
                 }
 
                 is GetArticlesUseCase.Output.Failure -> {
-                    _isRefreshing.value = false;
+                    _isRefreshing.value = false
                 }
             }
         }
     }
 
     fun getArticleById(id: Int): Article? {
-        return _articles.value?.find { it.id == id }
+        return _articles.value.find { it.id == id }
     }
 
     fun markArticleClicked(articleId: Int) {

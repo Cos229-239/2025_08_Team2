@@ -105,7 +105,7 @@ fun FeedScreen(
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
     val articleList =
-        articlesViewModel.articleList.collectAsState(initial = listOf()).value ?: listOf()
+        articlesViewModel.articleList.collectAsState(initial = listOf()).value
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
     val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
     PullToRefreshBox(
