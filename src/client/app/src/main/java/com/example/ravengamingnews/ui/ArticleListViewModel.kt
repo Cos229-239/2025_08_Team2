@@ -1,5 +1,6 @@
 package com.example.ravengamingnews.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ravengamingnews.domain.model.Article
@@ -10,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val LOG_TAG = "ArticleListViewModel"
 
 @HiltViewModel
 class ArticleListViewModel @Inject constructor(
@@ -38,6 +41,7 @@ class ArticleListViewModel @Inject constructor(
                 }
 
                 is GetArticlesUseCase.Output.Failure -> {
+                    Log.e(LOG_TAG, "Error fetching articles")
                     _isRefreshing.value = false
                 }
             }
