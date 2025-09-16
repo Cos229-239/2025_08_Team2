@@ -16,8 +16,8 @@ object ResourceMapper {
      * @param gameId The game ID from the API
      * @return The string resource ID for the localized game name, or fallback if no mapping exists
      */
-    fun getGameNameResourceId(gameId: Int): Int {
-        return gameNameMap[gameId] ?: R.string.unknown_game
+    fun getGameNameResourceId(gameId: Int): Int? {
+        return gameNameMap[gameId]
     }
 
     /**

@@ -52,8 +52,4 @@
     <string name="topic_2">Game Updates</string>
     <string name="topic_3">Cosmetics</string>
     <string name="topic_4">Game Modes</string>
-
-    <!-- Fallback for unknown games/topics -->
-    <string name="unknown_game">Unknown Game</string>
-    <string name="unknown_topic">Unknown Topic</string>
 </resources>

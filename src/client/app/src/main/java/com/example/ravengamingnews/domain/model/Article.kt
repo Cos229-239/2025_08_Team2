@@ -11,7 +11,7 @@ data class Article(
     val author: String,
     val date: Instant,
     val gameId: Int,
-    val gameNameResId: Int, // Resource ID for localized game name
+    val gameNameResId: Int?, // Resource ID for localized game name
     val topic: TopicEnum?,
     val topicNameResId: Int?, // Resource ID for localized topic name
 )
