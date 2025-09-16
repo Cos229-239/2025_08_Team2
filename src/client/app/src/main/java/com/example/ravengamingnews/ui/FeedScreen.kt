@@ -120,6 +120,17 @@ fun FeedScreen(
             verticalArrangement = Arrangement
                 .spacedBy(8.dp)
         ) {
+            if (articleList.isEmpty()) {
+                item {
+                    Text(
+                        text = "No articles available.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
+                }
+            }
             items(items = articleList) { item ->
                 val isClicked = clickedArticles[item.id] == true
                 ArticleCard(
