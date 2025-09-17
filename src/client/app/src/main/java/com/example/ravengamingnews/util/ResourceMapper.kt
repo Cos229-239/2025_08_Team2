@@ -1,5 +1,7 @@
 package com.example.ravengamingnews.util
 
+import androidx.compose.ui.graphics.painter.Painter
+import com.example.ravengamingnews.Category
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.data.TopicEnum
 
@@ -53,5 +55,81 @@ object ResourceMapper {
         TopicEnum.COSMETICS to R.string.topic_3,
         TopicEnum.GAME_MODES to R.string.topic_4,
         // Add more mappings as needed
+    )
+}
+data class Category(
+    val title: String,
+    val image: Painter? = null,
+    val filterEnable: Boolean = false
+)
+
+fun getGamesCategories() : List<Category> {
+    return listOf(
+        Category(
+            title = "League of Legends",
+            image = null
+        ),
+        Category(
+            title = "DOTA 2",
+            image = null
+        ),
+        Category(
+            title = "Heroes Of the Storm",
+            image = null
+        ),
+        Category(
+            title = "Vain Glory",
+            image = null
+        ),
+    )
+}
+
+fun getPlatformCategories() : List<Category> {
+    return listOf(
+        Category(
+            title = "PC",
+            image = null
+        ),
+        Category(
+            title = "Xbox",
+            image = null
+        ),
+        Category(
+            title = "Playstation",
+            image = null
+        ),
+        Category(
+            title = "Nintendo Switch",
+            image = null
+        ),
+    )
+}
+
+fun getContentCategories(): List<Category> {
+    return listOf(
+        Category(
+            title = "Game Reviews",
+            image = null
+        ),
+        Category(
+            title = "Patch Notes/Updates",
+            image = null
+        ),
+        Category(
+            title = "Upcoming Releases",
+            image = null
+        ),
+        Category(
+            title = "Developer Interviews",
+            image = null
+        ),
+        Category(
+            title = "Game Guides/Tutorials",
+            image = null
+        ),
+        Category(
+            title = "Deals & Discounts",
+            image = null
+        )
     )
 }
