@@ -5,6 +5,7 @@ import com.example.ravengamingnews.R
 object AppRoutes {
     // Home section routes
     const val HOME_FEED = "feed"
+    const val HOME_FEED_TOPIC = "feed/{topic}"
     const val HOME_BROWSE = "browse"
     const val HOME_ALL = "all"
     const val ARTICLE_DETAILS = "article/{articleId}"
