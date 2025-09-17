@@ -25,11 +25,22 @@ import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 fun FeedScreen(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
+    filters: List<String?>? = null,
+    sort: String? = null
 ) {
     val articleList =
         articlesViewModel.articleList.collectAsState(initial = listOf()).value
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
     val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
+
+    val filteredArticles = filters?.let { filterList ->
+        articleList.filter { article ->
+            filterList.any { filter ->
+                filter?.let { article.title.contains(it) } ?: false
+            }
+        }
+    } ?: articleList
+
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = { articlesViewModel.getArticles() },
@@ -53,7 +64,7 @@ fun FeedScreen(
                     )
                 }
             }
-            items(items = articleList) { item ->
+            items(items = filteredArticles) { item ->
                 val isClicked = clickedArticles[item.id] == true
                 ArticleCard(
                     item.title,
