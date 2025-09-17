@@ -233,7 +233,11 @@ private fun getContentCategories(): List<Category> {
             image = null
         ),
         Category(
-            title = "Patch Notes/Updates",
+            title = "Patch Notes",
+            image = null
+        ),
+        Category(
+            title = "Updates",
             image = null
         ),
         Category(
@@ -245,7 +249,11 @@ private fun getContentCategories(): List<Category> {
             image = null
         ),
         Category(
-            title = "Game Guides/Tutorials",
+            title = "Game Guides",
+            image = null
+        ),
+        Category(
+            title = "Tutorials",
             image = null
         ),
         Category(
