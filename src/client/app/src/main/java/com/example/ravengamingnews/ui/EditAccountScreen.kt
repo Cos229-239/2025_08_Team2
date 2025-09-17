@@ -29,21 +29,23 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ravengamingnews.ui.components.OutlinedTextFieldPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
-fun EditAccountScreen() {
-    var isEditing by remember{ mutableStateOf(false)}
-
-    var email by remember { mutableStateOf(value = "") }
-   // var password by remember { mutableStateOf(value = "") }
-    var fName by remember { mutableStateOf(value = "") }
-    var lName by remember { mutableStateOf(value = "") }
-    var dateOfBirth by remember { mutableStateOf(value = "")}
-
+fun EditAccountScreen(
+    viewModel: EditAccountViewModel = hiltViewModel()
+) {
+    val isEditing = viewModel.editing.collectAsState().value
+    val email by viewModel.email.collectAsState()
+    val fName by viewModel.firstName.collectAsState()
+    val lName by viewModel.lastName.collectAsState()
+    val dateOfBirth by viewModel.dateOfBirth.collectAsState()
 
     Box (
         modifier = Modifier
@@ -60,7 +62,7 @@ fun EditAccountScreen() {
             item {
                 OutlinedTextFieldPR(
                     value = email,
-                    onValueChanged = { newText -> email = newText},
+                    onValueChanged = { },
                     label = "EMAIL ADDRESS",
                     onKeyboardAction = {},
                     isEditable = isEditing,
@@ -70,7 +72,7 @@ fun EditAccountScreen() {
             item {
                 OutlinedTextFieldPR(
                     value = fName,
-                    onValueChanged = { newText -> fName = newText},
+                    onValueChanged = { },
                     label = "FIRST NAME",
                     onKeyboardAction = {},
                     isEditable = isEditing,
@@ -81,7 +83,7 @@ fun EditAccountScreen() {
             item {
                 OutlinedTextFieldPR(
                     value = lName,
-                    onValueChanged = { newText -> lName = newText},
+                    onValueChanged = {},
                     label = "LAST NAME",
                     onKeyboardAction = {},
                     isEditable = isEditing,
@@ -110,7 +112,7 @@ fun EditAccountScreen() {
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 Button(
-                    onClick = { isEditing = !isEditing },
+                    onClick = { viewModel.setEditing(!isEditing) },
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 8.dp,
                         pressedElevation = 4.dp,
@@ -131,7 +133,7 @@ fun EditAccountScreen() {
                     )
                 }
                 if (isEditing) Button(
-                    onClick = { isEditing = false },
+                    onClick = { viewModel.setEditing(false) },
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 8.dp,
                         pressedElevation = 4.dp,
@@ -153,6 +155,10 @@ fun EditAccountScreen() {
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserProfile()
     }
 }
 
