@@ -48,4 +48,13 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
     fun popBackStack() {
         _navController?.popBackStack()
     }
+
+    fun navigateToFeed(topic: String) {
+        _navController?.let { navController ->
+            navController.popBackStack(route = AppRoutes.HOME_BROWSE, inclusive = false)
+            navController.navigate("feed/$topic") {
+                launchSingleTop = true
+            }
+        }
+    }
 }
