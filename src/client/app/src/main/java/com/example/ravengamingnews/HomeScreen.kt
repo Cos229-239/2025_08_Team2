@@ -88,7 +88,7 @@ private fun TopAppBarPR(
                             text = stringResource(R.string.feed),
                             onClick = { navigationViewModel.navigateToMainTab(AppRoutes.HOME_FEED) },
                             modifier.padding(8.dp),
-                            selected = currentRoute == AppRoutes.HOME_FEED
+                            selected = currentRoute.startsWith(AppRoutes.HOME_FEED) == true
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.all),
@@ -201,7 +201,21 @@ fun HomeScreen(
                 AllTabContent(navigationViewModel, articleListViewModel)
             }
             composable(route = AppRoutes.HOME_BROWSE) {
-                BrowseScreen()
+                BrowseScreen(navigationViewModel)
+            }
+            composable(
+                route = "feed/{topic}",
+                arguments = listOf(
+                    navArgument("topic") {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+                val topic = backStackEntry.arguments?.getString("topic")
+                FeedScreen(
+                    navigationViewModel = navigationViewModel,
+                    filters = listOf(topic)
+                )
             }
             composable(route = AppRoutes.SETTINGS_EDIT_ACCOUNT) {
                 EditAccountScreen()
