@@ -31,6 +31,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 val colorStops = arrayOf(
@@ -88,6 +90,7 @@ fun CategoryGroupPR(
     title: String,
     categories: List<Category>,
     modifier: Modifier = Modifier,
+    navigationViewModel: NavigationViewModel,
 ) {
     Column (
         modifier = modifier
@@ -119,7 +122,11 @@ fun CategoryGroupPR(
         ) {
             items(categories) { category ->
                 CategoryButtonPR(
-                    onClick = { },
+                    onClick = {
+                        navigationViewModel.navigateToFeed(
+                            category.title
+                        )
+                    },
                     category = category
                 )
             }
@@ -160,11 +167,13 @@ fun CategoryButtonPreview() {
             ) {
                 CategoryGroupPR(
                     title = "Test Category",
-                    categories = getTestCategories()
+                    categories = getTestCategories(),
+                    navigationViewModel = hiltViewModel()
                 )
                 CategoryGroupPR(
                     title = "Test Category 2",
-                    categories = getTestCategories()
+                    categories = getTestCategories(),
+                    navigationViewModel = hiltViewModel()
                 )
             }
         }
@@ -187,6 +196,10 @@ private fun getGamesCategories() : List<Category> {
         ),
         Category(
             title = "Fortnite",
+            image = null
+        ),
+        Category(
+            title = "Dota 2",
             image = null
         ),
     )
@@ -244,11 +257,9 @@ private fun getContentCategories(): List<Category> {
 
 @Composable
 fun BrowseScreen(
-    modifier: Modifier = Modifier,
+    navigationViewModel: NavigationViewModel = hiltViewModel(),
 ) {
-    Scaffold(
-        modifier = modifier
-    ) { innerPadding ->
+    Scaffold{ innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -258,19 +269,22 @@ fun BrowseScreen(
             item {
                 CategoryGroupPR(
                     title = "Games",
-                    categories = getGamesCategories()
+                    categories = getGamesCategories(),
+                    navigationViewModel = navigationViewModel
                 )
             }
             item {
                 CategoryGroupPR(
                     title = "Platforms",
-                    categories = getPlatformCategories()
+                    categories = getPlatformCategories(),
+                    navigationViewModel = navigationViewModel
                 )
             }
             item {
                 CategoryGroupPR(
                     title = "Content",
-                    categories = getContentCategories()
+                    categories = getContentCategories(),
+                    navigationViewModel = navigationViewModel
                 )
             }
         }
