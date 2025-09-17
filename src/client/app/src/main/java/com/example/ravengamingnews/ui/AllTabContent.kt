@@ -22,7 +22,7 @@ import com.example.ravengamingnews.ui.components.ArticleCard
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
-fun FeedScreen(
+fun AllTabContent(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
@@ -78,8 +78,8 @@ fun FeedScreen(
 
 @Preview
 @Composable
-fun FeedScreenPreview() {
+fun AllTabContentPreview() {
     RavenGamingNewsTheme {
-        FeedScreen()
+        AllTabContent()
     }
 }

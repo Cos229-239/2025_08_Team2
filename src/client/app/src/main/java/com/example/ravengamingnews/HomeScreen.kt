@@ -38,6 +38,7 @@ import androidx.navigation.navArgument
 import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.AboutScreen
+import com.example.ravengamingnews.ui.AllTabContent
 import com.example.ravengamingnews.ui.ArticlePage
 import com.example.ravengamingnews.ui.EditAccountScreen
 import com.example.ravengamingnews.ui.FeedScreen
@@ -91,8 +92,9 @@ private fun TopAppBarPR(
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.all),
-                            onClick = {},
-                            modifier.padding(8.dp)
+                            onClick = { navigationViewModel.navigateToMainTab(AppRoutes.HOME_ALL) },
+                            modifier.padding(8.dp),
+                            selected = currentRoute == AppRoutes.HOME_ALL
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.browse),
@@ -196,7 +198,7 @@ fun HomeScreen(
                 FeedScreen(navigationViewModel, articleListViewModel)
             }
             composable(route = AppRoutes.HOME_ALL) {
-                // AllScreen(navigationViewModel)
+                AllTabContent(navigationViewModel, articleListViewModel)
             }
             composable(route = AppRoutes.HOME_BROWSE) {
                 BrowseScreen()
