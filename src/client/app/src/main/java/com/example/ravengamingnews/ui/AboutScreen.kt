@@ -39,7 +39,7 @@ fun AboutScreen(
         Text(
             text = "Patch Raven is a project app developed by \nTeam 2 for FullSail PNP2 & 3. " +
                     "The team features \nMel Dommer, Bob Dresner, Frank Gary, \nWesley Filion and Robert Tobiasz. " +
-                    "\nPatch Raven is an app concept about providing a news resource that brings all relevant news" +
+                    "\nPatch Raven is an app concept about providing a news resource that brings all relevant news " +
                     "to the user in a convenient and accessible way. ",
             textAlign = TextAlign.Center,
             modifier = Modifier
