@@ -3,12 +3,14 @@ package com.example.ravengamingnews.data
 import com.example.ravengamingnews.domain.model.AuthState
 import com.example.ravengamingnews.domain.model.UserFilters
 import com.example.ravengamingnews.domain.model.UserMetadata
+import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDate
 
 interface AuthRepository {
     val authState: StateFlow<AuthState>
     val continuedAsGuest: StateFlow<Boolean>
+    val userInfo: StateFlow<UserInfo?>
 
     suspend fun signIn(email: String, password: String): Boolean
     suspend fun signUp(

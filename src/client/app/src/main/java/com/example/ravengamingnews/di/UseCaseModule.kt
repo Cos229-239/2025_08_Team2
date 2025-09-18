@@ -18,4 +18,7 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindAuthenticateUseCase(impl: SignInUseCaseImpl): SignInUseCase
+
+    @Binds
+    abstract fun bindGetUserProfileUseCase(impl: GetUserProfileUseCaseImpl): GetUserProfileUseCase
 }
