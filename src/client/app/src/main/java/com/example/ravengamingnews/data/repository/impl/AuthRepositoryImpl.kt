@@ -9,6 +9,7 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionSource
 import io.github.jan.supabase.auth.status.SessionStatus
+import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -35,6 +36,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     private val _isGuest: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val continuedAsGuest: StateFlow<Boolean> = _isGuest
+
+    private val _userInfo: MutableStateFlow<UserInfo?> = MutableStateFlow(null)
+    override val userInfo: StateFlow<UserInfo?> = _userInfo
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -192,6 +196,7 @@ class AuthRepositoryImpl @Inject constructor(
                 )
                 _isGuest.value = sessionStatus.source == SessionSource.AnonymousSignIn ||
                         sessionStatus.session.user?.email.isNullOrEmpty()
+                _userInfo.value = sessionStatus.session.user
                 _authState.value = AuthState.Authenticated
             }
 
