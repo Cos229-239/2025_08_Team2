@@ -123,8 +123,8 @@ fun CategoryGroupPR(
             items(categories) { category ->
                 CategoryButtonPR(
                     onClick = {
-                        navigationViewModel.navigateToFeed(
-                            category.title
+                        navigationViewModel.navigateTo(
+                            "browse/${category.title}"
                         )
                     },
                     category = category

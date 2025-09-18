@@ -100,7 +100,7 @@ private fun TopAppBarPR(
                             text = stringResource(R.string.browse),
                             onClick = { navigationViewModel.navigateToMainTab(AppRoutes.HOME_BROWSE) },
                             modifier.padding(8.dp),
-                            selected = currentRoute == AppRoutes.HOME_BROWSE
+                            selected = currentRoute.startsWith(AppRoutes.HOME_BROWSE) == true
                         )
                     }
 
@@ -204,7 +204,7 @@ fun HomeScreen(
                 BrowseScreen(navigationViewModel)
             }
             composable(
-                route = "feed/{topic}",
+                route = "browse/{topic}",
                 arguments = listOf(
                     navArgument("topic") {
                         type = NavType.StringType
