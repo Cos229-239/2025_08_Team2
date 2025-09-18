@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.ravengamingnews.utils.toFormattedString
+import com.example.ravengamingnews.util.toFormattedString
 
 @Composable
 fun ArticlePage(
