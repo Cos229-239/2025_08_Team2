@@ -45,7 +45,7 @@ import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import com.example.ravengamingnews.ui.theme.linkTextStyle
-import com.example.ravengamingnews.utils.toFormattedString
+import com.example.ravengamingnews.util.toFormattedString
 import kotlin.time.Instant
 
 /**

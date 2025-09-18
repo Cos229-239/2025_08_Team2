@@ -1,4 +1,4 @@
-package com.example.ravengamingnews.utils
+package com.example.ravengamingnews.util
 
 import android.content.Context
 import android.text.format.DateFormat
