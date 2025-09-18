@@ -3,8 +3,10 @@ package com.example.ravengamingnews.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -30,18 +36,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ravengamingnews.Category
 import com.example.ravengamingnews.R
+import com.example.ravengamingnews.roundedCornerSize
 import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import com.example.ravengamingnews.ui.theme.linkTextStyle
@@ -358,6 +369,94 @@ fun OutlinedTextFieldPreview() {
                         selected = true
                     )
                 }
+            }
+        }
+    }
+}
+
+val colorStops = arrayOf(
+    0.0f to Color.Black,
+    0.25f to Color.DarkGray,
+    0.75f to Color.DarkGray,
+    1.0f to Color.Black
+)
+
+@Composable
+fun CategoryButtonPR(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    category: Category
+) {
+    ElevatedButton(
+        onClick = onClick,
+        shape = RoundedCornerShape(roundedCornerSize),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .size(width = 160.dp, height = 80.dp)
+            .clip(RoundedCornerShape(roundedCornerSize))
+            .background(Brush.verticalGradient(
+                colorStops = colorStops)
+            )
+    ) {
+        if (category.image != null)  {
+            Image(
+                painter = category.image,
+                contentDescription = category.title,
+                modifier = Modifier.size(64.dp)
+            )
+        } else {
+            Text(
+                text = category.title,
+                softWrap = true,
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+fun CategoryGroupPR(
+    title: String,
+    categories: List<Category>,
+    modifier: Modifier = Modifier,
+) {
+    Column (
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineLarge,
+            textAlign = TextAlign.Start,
+            modifier = modifier
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth()
+        )
+
+        val rows = (categories.size + 1) / 2
+        val itemHeight = 106 //Assumed height of each button + padding
+        val gridHeight = (rows * itemHeight + (rows - 1) * 16)
+
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 160.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(gridHeight.dp),
+            userScrollEnabled = false,
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(categories) { category ->
+                CategoryButtonPR(
+                    onClick = { },
+                    category = category
+                )
             }
         }
     }
