@@ -86,9 +86,27 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserProfile(email: String, firstName: String, lastName: String): Boolean {
+    override suspend fun refreshUserProfile(): UserInfo? {
+        auth.refreshCurrentSession()
         val user = auth.currentUserOrNull()
         return if (user != null) {
+            try {
+                _userInfo.value = user
+                return user
+            } catch (e: Exception) {
+                Log.e(logTag, "RefreshUserProfile error: ${e.message}")
+                null
+            }
+        } else {
+            Log.e(logTag, "RefreshUserProfile error: No authenticated user")
+            null
+        }
+    }
+
+    override suspend fun updateUserProfile(email: String, firstName: String, lastName: String): Pair<Boolean, Boolean> {
+        val user = auth.currentUserOrNull()
+        return if (user != null) {
+            val requiresConfirmation = email.isNotEmpty() && email != user.email
             try {
                 val currentMetadata = getUserMetadata() ?: throw IllegalStateException("User metadata not found")
 
@@ -100,21 +118,21 @@ class AuthRepositoryImpl @Inject constructor(
                 val metadataJson = json.encodeToString(UserMetadata.serializer(), updatedMetadata)
 
                 if (user.email != email && email.isNotEmpty()) {
-                    auth.updateUser(updateCurrentUser = false, redirectUrl = null) {
+                    auth.updateUser {
                         this.email = email
                     }
                 }
                 auth.updateUser {
                     data = json.parseToJsonElement(metadataJson).jsonObject
                 }
-                true
+                return Pair(true, requiresConfirmation)
             } catch (e: Exception) {
                 Log.e(logTag, "UpdateUserProfile error: ${e.message}")
-                false
+                Pair(false, false)
             }
         } else {
             Log.e(logTag, "UpdateUserProfile error: No authenticated user")
-            false
+            Pair(false, false)
         }
     }
 

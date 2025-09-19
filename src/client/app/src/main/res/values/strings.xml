@@ -52,4 +52,6 @@
     <string name="topic_2">Game Updates</string>
     <string name="topic_3">Cosmetics</string>
     <string name="topic_4">Game Modes</string>
+    <string name="confirmation_email_sent">A confirmation email has been sent, click the link to complete the email update.</string>
+    <string name="account_updated_successfully">Account updated successfully.</string>
 </resources>

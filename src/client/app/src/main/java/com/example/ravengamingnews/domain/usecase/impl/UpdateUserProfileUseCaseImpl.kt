@@ -11,7 +11,7 @@ class UpdateUserProfileUseCaseImpl @Inject constructor(
 ) : UpdateUserProfileUseCase {
     override suspend fun execute(input: UpdateUserProfileUseCase.Input): UpdateUserProfileUseCase.Output {
         return withContext(Dispatchers.IO) {
-            val updated = authRepository.updateUserProfile(
+            val (updated: Boolean, requiresConfirmation: Boolean) = authRepository.updateUserProfile(
                 email = input.userProfile.email,
                 firstName = input.userProfile.firstName,
                 lastName = input.userProfile.lastName,
@@ -19,7 +19,7 @@ class UpdateUserProfileUseCaseImpl @Inject constructor(
             if (!updated) {
                 UpdateUserProfileUseCase.Output.Failure(Exception("Failed to update user profile"))
             } else {
-                UpdateUserProfileUseCase.Output.Success
+                UpdateUserProfileUseCase.Output.Success(requiresConfirmation)
             }
         }
     }

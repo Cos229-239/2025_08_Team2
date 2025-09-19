@@ -22,6 +22,9 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
@@ -41,6 +44,7 @@ fun EditAccountScreen(
     val lastName by viewModel.lastName.collectAsState()
     val lastNameError by viewModel.lastNameError.collectAsState()
     val dateOfBirth by viewModel.dateOfBirth.collectAsState()
+    val infoMessage by viewModel.infoMessage.collectAsState()
 
     Box(
         modifier = Modifier
@@ -163,9 +167,22 @@ fun EditAccountScreen(
             }
         }
     }
-
+    if (infoMessage != null) {
+        Snackbar(
+            modifier = Modifier.padding(8.dp),
+            action = {
+                Button(onClick = { viewModel.clearInfoMessage() }) { Text("OK") }
+            }
+        ) { Text(infoMessage!!) }
+    }
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.clearInfoMessage()
+            viewModel.setEditing(false)
+        }
     }
 }
 
