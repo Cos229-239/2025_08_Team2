@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -47,11 +48,11 @@ fun EditAccountScreen(
     val lName by viewModel.lastName.collectAsState()
     val dateOfBirth by viewModel.dateOfBirth.collectAsState()
 
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-    ){
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -62,7 +63,7 @@ fun EditAccountScreen(
             item {
                 OutlinedTextFieldPR(
                     value = email,
-                    onValueChanged = { },
+                    onValueChanged = { viewModel.onEmailChange(it) },
                     label = "EMAIL ADDRESS",
                     onKeyboardAction = {},
                     isEditable = isEditing,
@@ -72,7 +73,7 @@ fun EditAccountScreen(
             item {
                 OutlinedTextFieldPR(
                     value = fName,
-                    onValueChanged = { },
+                    onValueChanged = { viewModel.onFirstNameChange(it) },
                     label = "FIRST NAME",
                     onKeyboardAction = {},
                     isEditable = isEditing,
@@ -83,7 +84,7 @@ fun EditAccountScreen(
             item {
                 OutlinedTextFieldPR(
                     value = lName,
-                    onValueChanged = {},
+                    onValueChanged = { viewModel.onLastNameChange(it) },
                     label = "LAST NAME",
                     onKeyboardAction = {},
                     isEditable = isEditing,
@@ -102,9 +103,9 @@ fun EditAccountScreen(
             }
         }
         Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
