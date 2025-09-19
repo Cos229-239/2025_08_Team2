@@ -1,6 +1,5 @@
 package com.example.ravengamingnews.ui
 
-import android.graphics.drawable.shapes.OvalShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,15 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,13 +21,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.materialIcon
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ravengamingnews.ui.components.OutlinedTextFieldPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
@@ -44,8 +35,11 @@ fun EditAccountScreen(
 ) {
     val isEditing = viewModel.editing.collectAsState().value
     val email by viewModel.email.collectAsState()
-    val fName by viewModel.firstName.collectAsState()
-    val lName by viewModel.lastName.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+    val firstName by viewModel.firstName.collectAsState()
+    val fistNameError by viewModel.firstNameError.collectAsState()
+    val lastName by viewModel.lastName.collectAsState()
+    val lastNameError by viewModel.lastNameError.collectAsState()
     val dateOfBirth by viewModel.dateOfBirth.collectAsState()
 
     Box(
@@ -66,16 +60,20 @@ fun EditAccountScreen(
                     onValueChanged = { viewModel.onEmailChange(it) },
                     label = "EMAIL ADDRESS",
                     onKeyboardAction = {},
+                    isError = emailError != null,
+                    errorMessage = emailError,
                     isEditable = isEditing,
                     isEnabled = true
                 )
             }
             item {
                 OutlinedTextFieldPR(
-                    value = fName,
+                    value = firstName,
                     onValueChanged = { viewModel.onFirstNameChange(it) },
                     label = "FIRST NAME",
                     onKeyboardAction = {},
+                    isError = fistNameError != null,
+                    errorMessage = fistNameError,
                     isEditable = isEditing,
                     isEnabled = true
                 )
@@ -83,10 +81,12 @@ fun EditAccountScreen(
 
             item {
                 OutlinedTextFieldPR(
-                    value = lName,
+                    value = lastName,
                     onValueChanged = { viewModel.onLastNameChange(it) },
                     label = "LAST NAME",
                     onKeyboardAction = {},
+                    isError = lastNameError != null,
+                    errorMessage = lastNameError,
                     isEditable = isEditing,
                     isEnabled = true
                 )
@@ -113,7 +113,13 @@ fun EditAccountScreen(
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 Button(
-                    onClick = { viewModel.setEditing(!isEditing) },
+                    onClick = {
+                        if (isEditing) {
+                            viewModel.onSaveChanges()
+                        } else {
+                            viewModel.setEditing(true)
+                        }
+                    },
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 8.dp,
                         pressedElevation = 4.dp,

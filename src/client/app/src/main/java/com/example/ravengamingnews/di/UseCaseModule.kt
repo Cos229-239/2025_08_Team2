@@ -21,4 +21,7 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindGetUserProfileUseCase(impl: GetUserProfileUseCaseImpl): GetUserProfileUseCase
+
+    @Binds
+    abstract fun bindUpdateUserProfileUseCase(impl: UpdateUserProfileUseCaseImpl): UpdateUserProfileUseCase
 }
