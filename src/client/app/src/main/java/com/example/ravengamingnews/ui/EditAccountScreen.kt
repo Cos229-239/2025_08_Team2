@@ -28,7 +28,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.components.OutlinedTextFieldPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
@@ -40,7 +42,7 @@ fun EditAccountScreen(
     val email by viewModel.email.collectAsState()
     val emailError by viewModel.emailError.collectAsState()
     val firstName by viewModel.firstName.collectAsState()
-    val fistNameError by viewModel.firstNameError.collectAsState()
+    val firstNameError by viewModel.firstNameError.collectAsState()
     val lastName by viewModel.lastName.collectAsState()
     val lastNameError by viewModel.lastNameError.collectAsState()
     val dateOfBirth by viewModel.dateOfBirth.collectAsState()
@@ -76,8 +78,8 @@ fun EditAccountScreen(
                     onValueChanged = { viewModel.onFirstNameChange(it) },
                     label = "FIRST NAME",
                     onKeyboardAction = {},
-                    isError = fistNameError != null,
-                    errorMessage = fistNameError,
+                    isError = firstNameError != null,
+                    errorMessage = firstNameError,
                     isEditable = isEditing,
                     isEnabled = true
                 )
@@ -167,17 +169,19 @@ fun EditAccountScreen(
             }
         }
     }
-    if (infoMessage != null) {
+    infoMessage?.let {
         Snackbar(
             modifier = Modifier.padding(8.dp),
             action = {
-                Button(onClick = { viewModel.clearInfoMessage() }) { Text("OK") }
+                Button(onClick = { viewModel.clearInfoMessage() }) { Text(stringResource(R.string.ok)) }
             }
-        ) { Text(infoMessage!!) }
+        ) { Text(infoMessage ?: stringResource(R.string.unexpected_error_contact_support)) }
     }
+
     LaunchedEffect(Unit) {
         viewModel.getUserProfile()
     }
+
     DisposableEffect(Unit) {
         onDispose {
             viewModel.clearInfoMessage()

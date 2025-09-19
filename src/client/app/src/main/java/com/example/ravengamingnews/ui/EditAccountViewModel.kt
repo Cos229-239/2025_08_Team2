@@ -64,7 +64,9 @@ class EditAccountViewModel @Inject constructor(
         val email = _email.value.trim()
         _emailError.value = when {
             email.isEmpty() -> context.getString(R.string.email_is_required)
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> context.getString(R.string.invalid_email_format)
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                .matches() -> context.getString(R.string.invalid_email_format)
+
             else -> null
         }
     }
@@ -118,6 +120,7 @@ class EditAccountViewModel @Inject constructor(
                     _lastName.value = result.profile.lastName
                     _dateOfBirth.value = result.profile.dateOfBirth.toString()
                 }
+
                 is GetUserProfileUseCase.Output.Failure -> {
                     // Handle failure if needed
                 }
@@ -127,7 +130,7 @@ class EditAccountViewModel @Inject constructor(
 
     fun onSaveChanges() {
         if (!validateAllFields()) {
-            // TODO: Show error message to user ?
+            // fields will show errors - do not proceed
             return
         }
 
@@ -158,6 +161,7 @@ class EditAccountViewModel @Inject constructor(
                     }
 
                     is UpdateUserProfileUseCase.Output.Failure -> {
+                        _infoMessage.value = context.getString(R.string.error_updating_account)
                     }
                 }
             }

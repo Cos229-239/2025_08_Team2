@@ -54,4 +54,7 @@
     <string name="topic_4">Game Modes</string>
     <string name="confirmation_email_sent">A confirmation email has been sent, click the link to complete the email update.</string>
     <string name="account_updated_successfully">Account updated successfully.</string>
+    <string name="error_updating_account">There was an error updating your account.</string>
+    <string name="ok">OK</string>
+    <string name="unexpected_error_contact_support">Unexpected error, contact support</string>
 </resources>
