@@ -21,11 +21,13 @@ interface AuthRepository {
         dateOfBirth: LocalDate
     ): Boolean
 
+    suspend fun refreshUserProfile(): UserInfo?
+
     suspend fun updateUserProfile(
         email: String,
         firstName: String,
         lastName: String,
-    ): Boolean
+    ): Pair<Boolean, Boolean> // returns Pair<updated, requiresConfirmation>
 
     suspend fun getUserMetadata(): UserMetadata?
     suspend fun updateUserFilters(filters: UserFilters): Boolean

@@ -9,7 +9,7 @@ class GetUserProfileUseCaseImpl @Inject constructor(
 ) : GetUserProfileUseCase {
     override suspend fun execute(input: Unit): GetUserProfileUseCase.Output {
         return try {
-            val user = authRepository.userInfo.value
+            val user = authRepository.refreshUserProfile()
             val metadata = authRepository.getUserMetadata()
             if (user != null && metadata != null) {
                 GetUserProfileUseCase.Output.Success(

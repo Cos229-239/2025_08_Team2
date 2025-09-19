@@ -31,6 +31,9 @@ class EditAccountViewModel @Inject constructor(
     private val isEditing = MutableStateFlow(false)
     val editing: StateFlow<Boolean> = isEditing
 
+    private val _infoMessage = MutableStateFlow<String?>(null)
+    val infoMessage: StateFlow<String?> = _infoMessage
+
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
 
@@ -82,6 +85,10 @@ class EditAccountViewModel @Inject constructor(
     fun onLastNameChange(newLastName: String) {
         _lastName.value = newLastName
         validateLastName()
+    }
+
+    fun clearInfoMessage() {
+        _infoMessage.value = null
     }
 
     private fun validateLastName() {
@@ -141,6 +148,12 @@ class EditAccountViewModel @Inject constructor(
                 _isLoading.value = false
                 when (result) {
                     is UpdateUserProfileUseCase.Output.Success -> {
+                        if (result.requiresConfirmation) {
+                            _infoMessage.value = context.getString(R.string.confirmation_email_sent)
+                        } else {
+                            _infoMessage.value =
+                                context.getString(R.string.account_updated_successfully)
+                        }
                         isEditing.value = false
                     }
 
