@@ -168,6 +168,7 @@ class EditAccountViewModel @Inject constructor(
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Error updating account: ${e.message}")
             _isLoading.value = false
+            _infoMessage.value = context.getString(R.string.error_updating_account)
         }
     }
 
