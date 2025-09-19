@@ -108,7 +108,7 @@ class AuthRepositoryImpl @Inject constructor(
         return if (user != null) {
             val requiresConfirmation = email.isNotEmpty() && email != user.email
             try {
-                val currentMetadata = getUserMetadata() ?: throw IllegalStateException("User metadata not found")
+                val currentMetadata = getUserMetadata() ?: return Pair(false, false)
 
                 val updatedMetadata = currentMetadata.copy(
                     firstName = firstName,
