@@ -23,10 +23,8 @@ interface AuthRepository {
 
     suspend fun updateUserProfile(
         email: String,
-        password: String,
         firstName: String,
         lastName: String,
-        dateOfBirth: LocalDate
     ): Boolean
 
     suspend fun getUserMetadata(): UserMetadata?

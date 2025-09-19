@@ -86,28 +86,25 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserProfile(email: String, password: String, firstName: String, lastName: String, dateOfBirth: LocalDate): Boolean {
+    override suspend fun updateUserProfile(email: String, firstName: String, lastName: String): Boolean {
         val user = auth.currentUserOrNull()
         return if (user != null) {
             try {
-                val currentMetadata = getUserMetadata() ?: UserMetadata(
-                    firstName = firstName,
-                    lastName = lastName,
-                    dateOfBirth = dateOfBirth,
-                    filters = UserFilters()
-                )
+                val currentMetadata = getUserMetadata() ?: throw IllegalStateException("User metadata not found")
 
                 val updatedMetadata = currentMetadata.copy(
                     firstName = firstName,
                     lastName = lastName,
-                    dateOfBirth = dateOfBirth
                 )
 
                 val metadataJson = json.encodeToString(UserMetadata.serializer(), updatedMetadata)
 
+                if (user.email != email && email.isNotEmpty()) {
+                    auth.updateUser(updateCurrentUser = false, redirectUrl = null) {
+                        this.email = email
+                    }
+                }
                 auth.updateUser {
-                    this.email = email
-                    this.password = password
                     data = json.parseToJsonElement(metadataJson).jsonObject
                 }
                 true

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.domain.model.UserProfile
 import com.example.ravengamingnews.domain.usecase.GetUserProfileUseCase
+import com.example.ravengamingnews.domain.usecase.UpdateUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ private const val LOG_TAG = "EditAccountViewModel"
 @HiltViewModel
 class EditAccountViewModel @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val updateUserProfileUseCase: UpdateUserProfileUseCase,
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -132,13 +134,19 @@ class EditAccountViewModel @Inject constructor(
                     dateOfBirth = LocalDate.parse(_dateOfBirth.value) // Read-only field
                 )
 
-                /*
-                val result = getUserProfileUseCase.execute(userData)
+                val result = updateUserProfileUseCase.execute(
+                    input = UpdateUserProfileUseCase.Input(userProfile = userData)
+                )
 
                 _isLoading.value = false
                 when (result) {
+                    is UpdateUserProfileUseCase.Output.Success -> {
+                        isEditing.value = false
+                    }
+
+                    is UpdateUserProfileUseCase.Output.Failure -> {
+                    }
                 }
-                */
             }
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Error updating account: ${e.message}")
