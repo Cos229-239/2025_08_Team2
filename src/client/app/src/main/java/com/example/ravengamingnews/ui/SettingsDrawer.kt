@@ -57,6 +57,7 @@ fun SettingsDrawer(
             MainSettingsDrawerContent(
                 drawerState = drawerState,
                 modifier = modifier,
+                settingsDrawerViewModel = settingsDrawerViewModel
             )
             Spacer(modifier = Modifier.weight(1f))
             BottomDrawerSection(
@@ -104,6 +105,7 @@ private fun DrawerHeader() {
 private fun MainSettingsDrawerContent(
     drawerState: DrawerState,
     modifier: Modifier = Modifier,
+    settingsDrawerViewModel: SettingsDrawerViewModel = hiltViewModel(),
 ) {
     val navigationViewModel: NavigationViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
@@ -111,13 +113,15 @@ private fun MainSettingsDrawerContent(
     Column(
         modifier = modifier.padding(start = 16.dp, top = 2.dp, bottom = 2.dp)
     ) {
-        SettingsButton(
-            text = stringResource(R.string.account),
-            onClick = {
-                scope.launch { drawerState.close() }
-                navigationViewModel.navigateTo(AppRoutes.SETTINGS_EDIT_ACCOUNT)
-            }
-        )
+        if (settingsDrawerViewModel.isSignedIn()) {
+            SettingsButton(
+                text = stringResource(R.string.account),
+                onClick = {
+                    scope.launch { drawerState.close() }
+                    navigationViewModel.navigateTo(AppRoutes.SETTINGS_EDIT_ACCOUNT)
+                }
+            )
+        }
         SettingsButton(
             text = stringResource(R.string.filters),
             onClick = {
