@@ -1,5 +1,6 @@
 package com.example.ravengamingnews.domain.model
 
+import com.example.ravengamingnews.data.TopicEnum
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
@@ -21,5 +22,5 @@ data class UserMetadata(
 @Serializable
 data class UserFilters(
     val games: List<Int> = emptyList(),
-    val topics: List<Int> = emptyList()
+    val topics: List<TopicEnum> = emptyList()
 )

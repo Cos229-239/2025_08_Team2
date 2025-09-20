@@ -2,6 +2,7 @@ package com.example.ravengamingnews.data.repository.impl
 
 import android.util.Log
 import com.example.ravengamingnews.data.AuthRepository
+import com.example.ravengamingnews.data.local.UserPreferencesRepository
 import com.example.ravengamingnews.domain.model.AuthState
 import com.example.ravengamingnews.domain.model.UserFilters
 import com.example.ravengamingnews.domain.model.UserMetadata
@@ -28,7 +29,8 @@ private const val logTag = "AuthRepository"
 
 class AuthRepositoryImpl @Inject constructor(
     private val auth: Auth,
-    private val json: Json
+    private val json: Json,
+    private val userPreferences: UserPreferencesRepository
 ) : AuthRepository {
 
     private val _authState: MutableStateFlow<AuthState> = MutableStateFlow(AuthState.Initializing)
@@ -63,7 +65,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun signUp(email: String, password: String, firstName: String, lastName: String, dateOfBirth: LocalDate): Boolean {
+    override suspend fun signUp(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        dateOfBirth: LocalDate
+    ): Boolean {
         return try {
             val metadata = UserMetadata(
                 firstName = firstName,
@@ -137,7 +145,24 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserMetadata(): UserMetadata? {
-        val user = auth.currentUserOrNull() ?: return null
+        val user = auth.currentUserOrNull()
+
+        // For guest users, return default metadata with locally stored filters
+        if (_isGuest.value) {
+            val guestFilters = userPreferences.getGuestFilters() ?: UserFilters()
+            return UserMetadata(
+                firstName = "Guest",
+                lastName = "User",
+                dateOfBirth = LocalDate(2000, 1, 1), // Default date
+                filters = guestFilters
+            )
+        }
+
+        if (user == null) {
+            return null
+        }
+
+        // For authenticated users, parse metadata from Supabase
         return try {
             val userData = user.userMetadata
 
@@ -171,6 +196,18 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUserFilters(filters: UserFilters): Boolean {
+        // For guest users, store filters in local storage
+        if (_isGuest.value) {
+            try {
+                userPreferences.saveGuestFilters(filters)
+                return true
+            } catch (e: Exception) {
+                Log.e(logTag, "Error saving guest filters to local storage: ${e.message}")
+                return false
+            }
+        }
+
+        // For authenticated users, update filters in Supabase
         return try {
             val currentMetadata = getUserMetadata() ?: return false
             val updatedMetadata = currentMetadata.copy(filters = filters)

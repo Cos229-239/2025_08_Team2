@@ -29,7 +29,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,7 +42,6 @@ import com.example.ravengamingnews.ui.AllTabContent
 import com.example.ravengamingnews.ui.ArticlePage
 import com.example.ravengamingnews.ui.EditAccountScreen
 import com.example.ravengamingnews.ui.FeedScreen
-import com.example.ravengamingnews.ui.FiltersScreen
 import com.example.ravengamingnews.ui.SavedScreen
 import com.example.ravengamingnews.ui.SupportScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
@@ -51,6 +49,8 @@ import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import com.example.ravengamingnews.ui.ArticleListViewModel
 import com.example.ravengamingnews.ui.EditAccountViewModel
+import com.example.ravengamingnews.ui.FiltersScreenSwitches
+import com.example.ravengamingnews.ui.FiltersViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -163,6 +163,7 @@ fun HomeScreen(
     val navigationViewModel: NavigationViewModel = hiltViewModel()
     val articleListViewModel: ArticleListViewModel = hiltViewModel()
     val editAccountViewModel: EditAccountViewModel = hiltViewModel()
+    val filtersViewModel: FiltersViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
 
@@ -210,7 +211,7 @@ fun HomeScreen(
                 EditAccountScreen(viewModel = editAccountViewModel)
             }
             composable(route = AppRoutes.SETTINGS_FILTERS) {
-                FiltersScreen()
+                FiltersScreenSwitches(viewModel = filtersViewModel)
             }
             composable(route = AppRoutes.SETTINGS_SAVED) {
                 SavedScreen()
