@@ -57,4 +57,5 @@
     <string name="error_updating_account">There was an error updating your account.</string>
     <string name="ok">OK</string>
     <string name="unexpected_error_contact_support">Unexpected error, contact support</string>
+    <string name="save">Save</string>
 </resources>
