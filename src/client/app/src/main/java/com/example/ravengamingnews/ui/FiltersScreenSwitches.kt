@@ -103,7 +103,7 @@ fun FiltersScreenSwitches(
 }
 
 @Composable
-fun FilterSwitchGroup(
+private fun FilterSwitchGroup(
     title: String,
     switches: List<Filter>,
     modifier: Modifier = Modifier,
@@ -135,7 +135,7 @@ fun FilterSwitchGroup(
 }
 
 @Composable
-fun FilterSwitchRow(
+private fun FilterSwitchRow(
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,

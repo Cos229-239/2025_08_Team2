@@ -23,22 +23,31 @@ import com.example.ravengamingnews.ui.components.ArticleCard
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
-fun AllTabContent(
+fun FeedScreenAlt(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
+    filtersViewModel: FiltersViewModel,
 ) {
+    val gameFilters = filtersViewModel.gameFilters.collectAsState().value
+    val topicFilters = filtersViewModel.topicFilters.collectAsState().value
     val articleList =
         articlesViewModel.articleList.collectAsState(initial = listOf()).value
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
     val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
 
     LaunchedEffect(Unit) {
-        articlesViewModel.getArticles()
+        filtersViewModel.loadUserFilters()
+    }
+
+    LaunchedEffect(gameFilters, topicFilters) {
+        if (gameFilters.isNotEmpty() && topicFilters.isNotEmpty()) {
+            articlesViewModel.getArticlesByFilters(gameFilters, topicFilters)
+        }
     }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
-        onRefresh = { articlesViewModel.getArticles() },
+        onRefresh = { articlesViewModel.getArticlesByFilters(gameFilters, topicFilters) },
         modifier = Modifier.fillMaxSize()
     ) {
         LazyColumn(
@@ -84,8 +93,8 @@ fun AllTabContent(
 
 @Preview
 @Composable
-fun AllTabContentPreview() {
+fun FeedScreenAltPreview() {
     RavenGamingNewsTheme {
-        AllTabContent()
+        FeedScreenAlt(filtersViewModel = hiltViewModel())
     }
 }
