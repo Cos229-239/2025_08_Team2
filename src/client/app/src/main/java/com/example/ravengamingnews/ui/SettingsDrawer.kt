@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -105,15 +106,16 @@ private fun DrawerHeader() {
 private fun MainSettingsDrawerContent(
     drawerState: DrawerState,
     modifier: Modifier = Modifier,
-    settingsDrawerViewModel: SettingsDrawerViewModel = hiltViewModel(),
+    settingsDrawerViewModel: SettingsDrawerViewModel,
 ) {
     val navigationViewModel: NavigationViewModel = hiltViewModel()
+    val isGuest = settingsDrawerViewModel.isGuest.collectAsState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current  // Add this line to get the context
     Column(
         modifier = modifier.padding(start = 16.dp, top = 2.dp, bottom = 2.dp)
     ) {
-        if (settingsDrawerViewModel.isSignedIn()) {
+        if (!isGuest.value) {
             SettingsButton(
                 text = stringResource(R.string.account),
                 onClick = {
@@ -154,9 +156,10 @@ private fun MainSettingsDrawerContent(
 private fun BottomDrawerSection(
     drawerState: DrawerState,
     modifier: Modifier = Modifier,
-    settingsDrawerViewModel: SettingsDrawerViewModel
+    settingsDrawerViewModel: SettingsDrawerViewModel,
 ) {
     val navigationViewModel: NavigationViewModel = hiltViewModel()
+    val isGuest = settingsDrawerViewModel.isGuest.collectAsState()
     val scope = rememberCoroutineScope()
     Column(
         modifier = modifier.padding(start = 16.dp, top = 2.dp, bottom = 32.dp)
@@ -180,7 +183,7 @@ private fun BottomDrawerSection(
         Spacer(modifier = Modifier.height(24.dp))
 
         val buttonText =
-            if (settingsDrawerViewModel.isSignedIn()) stringResource(
+            if (!isGuest.value) stringResource(
                 R.string.sign_out
             ) else stringResource(R.string.login)
         ButtonPR(
