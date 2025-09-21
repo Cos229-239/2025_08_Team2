@@ -1,8 +1,15 @@
 package com.example.ravengamingnews.ui
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,17 +21,28 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -34,6 +52,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ravengamingnews.R
 import com.example.ravengamingnews.roundedCornerSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
@@ -43,41 +63,94 @@ import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
 fun FiltersScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: FiltersScreenViewModel = hiltViewModel()
 ) {
-    Scaffold(
-        modifier = modifier
-    ) { innerPadding ->
-        LazyColumn(
+    val filteredGames by viewModel.filteredGames.collectAsState()
+    val filteredPlatforms by viewModel.filteredPlatforms.collectAsState()
+    val filteredContent by viewModel.filteredContent.collectAsState()
+    val hasUnsavedChanges by viewModel.hasUnsavedChanges.collectAsState(false)
+
+    Box {
+        Scaffold(
+            modifier = modifier
+        ) { innerPadding ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentPadding = PaddingValues(16.dp),
+            ) {
+                item {
+                    CategoryGroupPR2(
+                        title = "Games",
+                        categories = getGamesCategories2(),
+                        filteredItems = filteredGames,
+                        onFilterChanged = { viewModel.updateGamesSelection(it) }
+                    )
+                }
+                item {
+                    CategoryGroupPR2(
+                        title = "Platforms",
+                        categories = getPlatformCategories2(),
+                        filteredItems = filteredPlatforms,
+                        onFilterChanged = { viewModel.updatePlatformsSelection(it) }
+                    )
+                }
+                item {
+                    CategoryGroupPR2(
+                        title = "Content",
+                        categories = getContentCategories2(),
+                        filteredItems = filteredContent,
+                        onFilterChanged = { viewModel.updateContentSelection(it) }
+                    )
+                }
+
+            }
+        }
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(16.dp),
+                .padding(16.dp)
         ) {
-            item {
-                CategoryGroupPR2(
-                    title = "Games",
-                    categories = getGamesCategories2(),
-                    mode = CategoryGroupMode.Selectable
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier.align(Alignment.BottomEnd)
+            ) {
+                AnimatedVisibility(
+                    visible = hasUnsavedChanges,
+                    enter = scaleIn() + fadeIn(),
+                    exit = scaleOut() + fadeOut()
                 )
-            }
-            item {
-                CategoryGroupPR2(
-                    title = "Platforms",
-                    categories = getPlatformCategories2(),
-                    mode = CategoryGroupMode.Selectable
-                )
-            }
-            item {
-                CategoryGroupPR2(
-                    title = "Content",
-                    categories = getContentCategories2(),
-                    mode = CategoryGroupMode.Selectable
-                )
+                {
+                    Button(
+                        onClick = { viewModel.saveFilters() },
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 8.dp,
+                            pressedElevation = 4.dp,
+                            hoveredElevation = 6.dp,
+                            focusedElevation = 6.dp
+                        ),
+                        shape = CircleShape,
+                        modifier = Modifier
+                            .size(75.dp),
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Icon(
+                            Icons.Filled.Check,
+                            "Save button",
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .size(40.dp)
+                        )
+                    }
+                }
+
+                }
             }
         }
     }
-}
 
 @Preview
 @Composable
@@ -116,8 +189,10 @@ fun CategoryButtonPR2(
             .padding(8.dp)
             .size(width = 160.dp, height = 80.dp)
             .clip(RoundedCornerShape(roundedCornerSize))
-            .background(Brush.verticalGradient(
-                colorStops = colorStops)
+            .background(
+                Brush.verticalGradient(
+                    colorStops = colorStops
+                )
             )
     ) {
         if (category.image != null)  {
@@ -144,19 +219,12 @@ fun CategoryButtonPR2(
 fun CategoryGroupPR2(
     title: String,
     categories: List<Category2>,
-    mode: CategoryGroupMode,
-    modifier: Modifier = Modifier,
-    onCategoryClick: (Category2) -> Unit = {}
+    filteredItems: Set<String>,
+    onFilterChanged: (Set<String>) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var selectedCategories by remember { mutableStateOf(categories) }
-
-    val displayCategories = when (mode){
-        is CategoryGroupMode.Selectable -> selectedCategories
-        is CategoryGroupMode.Navigable -> categories
-    }
-
     Column (
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp)
     ) {
@@ -164,7 +232,7 @@ fun CategoryGroupPR2(
             text = title,
             style = MaterialTheme.typography.headlineLarge,
             textAlign = TextAlign.Start,
-            modifier = modifier
+            modifier = Modifier
                 .padding(horizontal = 24.dp)
                 .fillMaxWidth()
         )
@@ -183,30 +251,25 @@ fun CategoryGroupPR2(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(displayCategories) { category ->
-                val isSelected = if (mode is CategoryGroupMode.Selectable) category.isSelected else false
+            items(categories) { category ->
+                val isSelected = filteredItems.contains(category.title)
 
                 CategoryButtonPR2(
-                    category = category,
+                    category = category.copy(isSelected = isSelected),
                     onClick = {
-                        when(mode){
-                            is CategoryGroupMode.Selectable -> {
-                                selectedCategories = selectedCategories.map{
-                                    if(it.title == category.title) it.copy(isSelected = !it.isSelected)
-                                    else it
+                                val updatedSet = if (isSelected){
+                                    filteredItems - category.title
+                                } else {
+                                    filteredItems + category.title
                                 }
+                                onFilterChanged(updatedSet)
                             }
-
-                            is CategoryGroupMode.Navigable -> {
-                                onCategoryClick(category)
-                            }
+                )
                         }
                     }
-                )
             }
         }
-    }
-}
+
 data class Category2(
     val title: String,
     val image: Painter? = null,
