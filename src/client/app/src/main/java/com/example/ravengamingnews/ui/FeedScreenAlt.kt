@@ -26,7 +26,7 @@ import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 fun FeedScreenAlt(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
-    filtersViewModel: FiltersViewModel,
+    filtersViewModel: FiltersViewModel = hiltViewModel()
 ) {
     val gameFilters = filtersViewModel.gameFilters.collectAsState().value
     val topicFilters = filtersViewModel.topicFilters.collectAsState().value
@@ -88,13 +88,5 @@ fun FeedScreenAlt(
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun FeedScreenAltPreview() {
-    RavenGamingNewsTheme {
-        FeedScreenAlt(filtersViewModel = hiltViewModel())
     }
 }
