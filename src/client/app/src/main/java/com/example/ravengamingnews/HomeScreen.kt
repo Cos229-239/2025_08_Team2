@@ -48,7 +48,10 @@ import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import com.example.ravengamingnews.ui.ArticleListViewModel
+import com.example.ravengamingnews.ui.BrowseScreenAlt
 import com.example.ravengamingnews.ui.EditAccountViewModel
+import com.example.ravengamingnews.ui.FeedScreenAlt
+import com.example.ravengamingnews.ui.FiltersScreen
 import com.example.ravengamingnews.ui.FiltersScreenSwitches
 import com.example.ravengamingnews.ui.FiltersViewModel
 import kotlinx.coroutines.launch
@@ -199,18 +202,29 @@ fun HomeScreen(
             exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
             composable(route = AppRoutes.HOME_FEED) {
-                FeedScreen(navigationViewModel, articleListViewModel)
+//                FeedScreen(navigationViewModel, articleListViewModel)
+                FeedScreenAlt(
+                    navigationViewModel = navigationViewModel,
+                    articlesViewModel = articleListViewModel,
+                    filtersViewModel = filtersViewModel
+                )
             }
             composable(route = AppRoutes.HOME_ALL) {
                 AllTabContent(navigationViewModel, articleListViewModel)
             }
             composable(route = AppRoutes.HOME_BROWSE) {
-                BrowseScreen()
+//                BrowseScreen()
+                BrowseScreenAlt(
+                    filtersViewModel = filtersViewModel,
+                    articleListViewModel = articleListViewModel,
+                    navigationViewModel = navigationViewModel
+                )
             }
             composable(route = AppRoutes.SETTINGS_EDIT_ACCOUNT) {
                 EditAccountScreen(viewModel = editAccountViewModel)
             }
             composable(route = AppRoutes.SETTINGS_FILTERS) {
+//                FiltersScreen()
                 FiltersScreenSwitches(viewModel = filtersViewModel)
             }
             composable(route = AppRoutes.SETTINGS_SAVED) {
