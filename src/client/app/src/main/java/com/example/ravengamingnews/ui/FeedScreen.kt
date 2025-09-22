@@ -2,6 +2,7 @@ package com.example.ravengamingnews.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,7 +39,9 @@ fun ArticleCard(
     articlePreview: String,
     articleDate: Instant,
     wasClicked: Boolean,
-    onClick: () -> Unit
+    isSaved: Boolean,
+    onClick: () -> Unit,
+    onSaveClick: () -> Unit
 ) {
     val articleCardColor = if (wasClicked) MaterialTheme.colorScheme.tertiary
     else MaterialTheme.colorScheme.primaryContainer
@@ -105,6 +108,7 @@ fun FeedScreen(
 ) {
     val articleList = articlesViewModel.articleList.collectAsState(initial = listOf()).value
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
+    val savedArticles by articlesViewModel.savedArticles.collectAsState(initial = emptySet())
 
     if (articleList.isNullOrEmpty()) {
         Column(
@@ -129,12 +133,15 @@ fun FeedScreen(
     ) {
         items(items = articleList) { item ->
             val isClicked = clickedArticles[item.id] == true
+            val isSaved = savedArticles.contains(item.id)
+
             ArticleCard(
                 item.title,
                 item.author,
                 item.summary,
                 item.date,
                 wasClicked = isClicked,
+                isSaved = isSaved,
                 onClick = {
                     articlesViewModel.markArticleClicked(item.id)
                     navigationViewModel.navigateTo(
@@ -143,7 +150,8 @@ fun FeedScreen(
                             item.id.toString()
                         )
                     )
-                }
+                },
+                onSaveClick = {articlesViewModel.toggleSaveArticle(item.id)}
             )
         }
     }

@@ -206,7 +206,10 @@ fun HomeScreen(
                 FiltersScreen()
             }
             composable(route = AppRoutes.SETTINGS_SAVED) {
-                SavedScreen()
+                SavedScreen(
+                    navigationViewModel = navigationViewModel,
+                    articlesViewModel = articleListViewModel
+                )
             }
             composable(route = AppRoutes.SETTINGS_SUPPORT) {
                 SupportScreen()
