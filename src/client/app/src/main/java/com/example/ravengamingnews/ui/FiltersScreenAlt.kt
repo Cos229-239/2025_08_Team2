@@ -18,7 +18,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,16 +40,36 @@ import com.example.ravengamingnews.data.TopicFilter
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
-fun FiltersScreenSwitches(
+fun FiltersScreenAlt(
     modifier: Modifier = Modifier,
     viewModel: FiltersViewModel = hiltViewModel(),
 ) {
     val gameSwitches = viewModel.gameFilters.collectAsState().value
     val topicSwitches = viewModel.topicFilters.collectAsState().value
+    val isLoading = viewModel.isLoading.collectAsState().value
+    val isSaving = viewModel.isSaving.collectAsState().value
+    val errorMessage = viewModel.errorMessage.collectAsState().value
+    val hasUnsavedChanges = viewModel.hasUnsavedChanges.collectAsState().value
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        if (isLoading || isSaving) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            )
+        }
+        if (errorMessage != null) {
+            Snackbar(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.BottomCenter)
+            ) {
+                Text(text = errorMessage)
+            }
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
@@ -72,28 +94,30 @@ fun FiltersScreenSwitches(
             }
             item { Spacer(modifier = Modifier.size(100.dp)) }  // To provide space for the floating button}
         }
-        Button(
-            onClick = { viewModel.saveUserFilters() },
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = 8.dp,
-                pressedElevation = 4.dp,
-                hoveredElevation = 6.dp,
-                focusedElevation = 6.dp
-            ),
-            shape = CircleShape,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .size(75.dp),
-            contentPadding = PaddingValues(0.dp)
-        ) {
-            Icon(
-                Icons.Filled.Check,
-                contentDescription = stringResource(R.string.save),
-                tint = Color.Black,
+        if (hasUnsavedChanges) {
+            Button(
+                onClick = { viewModel.saveUserFilters() },
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 8.dp,
+                    pressedElevation = 4.dp,
+                    hoveredElevation = 6.dp,
+                    focusedElevation = 6.dp
+                ),
+                shape = CircleShape,
                 modifier = Modifier
-                    .size(40.dp)
-            )
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+                    .size(75.dp),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Check,
+                    contentDescription = stringResource(R.string.save),
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(40.dp)
+                )
+            }
         }
     }
 
@@ -164,6 +188,6 @@ private fun FilterSwitchRow(
 @Composable
 fun FilterSwitchRowPreview() {
     RavenGamingNewsTheme {
-        FiltersScreenSwitches()
+        FiltersScreenAlt()
     }
 }

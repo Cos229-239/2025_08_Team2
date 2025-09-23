@@ -41,7 +41,6 @@ import com.example.ravengamingnews.ui.AboutScreen
 import com.example.ravengamingnews.ui.AllTabContent
 import com.example.ravengamingnews.ui.ArticlePage
 import com.example.ravengamingnews.ui.EditAccountScreen
-import com.example.ravengamingnews.ui.FeedScreen
 import com.example.ravengamingnews.ui.SavedScreen
 import com.example.ravengamingnews.ui.SupportScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
@@ -51,8 +50,7 @@ import com.example.ravengamingnews.ui.ArticleListViewModel
 import com.example.ravengamingnews.ui.BrowseScreenAlt
 import com.example.ravengamingnews.ui.EditAccountViewModel
 import com.example.ravengamingnews.ui.FeedScreenAlt
-import com.example.ravengamingnews.ui.FiltersScreen
-import com.example.ravengamingnews.ui.FiltersScreenSwitches
+import com.example.ravengamingnews.ui.FiltersScreenAlt
 import com.example.ravengamingnews.ui.FiltersViewModel
 import kotlinx.coroutines.launch
 
@@ -225,7 +223,7 @@ fun HomeScreen(
             }
             composable(route = AppRoutes.SETTINGS_FILTERS) {
 //                FiltersScreen()
-                FiltersScreenSwitches(viewModel = filtersViewModel)
+                FiltersScreenAlt(viewModel = filtersViewModel)
             }
             composable(route = AppRoutes.SETTINGS_SAVED) {
                 SavedScreen()
