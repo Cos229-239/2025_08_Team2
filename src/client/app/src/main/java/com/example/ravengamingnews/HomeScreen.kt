@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.mediumTopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -61,9 +62,7 @@ private fun TopAppBarPR(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     navController: androidx.navigation.NavHostController
 ) {
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
-
+    val currentRoute = navigationViewModel.currentRoute.collectAsState("").value
     val scope = rememberCoroutineScope()
 
     Surface(shadowElevation = 16.dp) {

@@ -3,6 +3,8 @@ package com.example.ravengamingnews.navigation
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 /**
@@ -14,11 +16,22 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
 
     private var _navController: NavController? = null
 
+    private val _currentRoute = MutableStateFlow<String?>(AppRoutes.HOME_FEED)
+    val currentRoute: Flow<String?> = _currentRoute
+
     fun setNavController(navController: NavController) {
         _navController = navController
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.route != null && AppRoutes.isHomeRoute(destination.route)) {
+                _currentRoute.value = destination.route
+            }
+        }
     }
 
     fun navigateTo(route: String) {
+        if (route == _currentRoute.value) {
+            return
+        }
         _navController?.navigate(route)
     }
 
@@ -27,6 +40,9 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
      * to ensure consistent tab selection behavior.
      */
     fun navigateToMainTab(route: String) {
+        if (route == _currentRoute.value) {
+            return
+        }
         _navController?.let { navController ->
             navController.navigate(route) {
                 // Pop up to the start destination to avoid building up a large stack
