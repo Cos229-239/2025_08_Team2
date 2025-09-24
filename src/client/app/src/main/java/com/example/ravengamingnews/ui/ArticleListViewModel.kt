@@ -27,6 +27,9 @@ class ArticleListViewModel @Inject constructor(
     private val _articles = MutableStateFlow<List<Article>>(listOf())
     val articleList: Flow<List<Article>> = _articles
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
@@ -34,23 +37,37 @@ class ArticleListViewModel @Inject constructor(
     val browseFilter: Flow<Filter?> = _browseFilter
 
     init {
+        _isLoading.value = true
+        _isRefreshing.value = false
         getArticles()
     }
 
     fun getArticles() {
+        _isLoading.value = true
+        _isRefreshing.value = false
+        getArticlesAll()
+    }
+
+    fun refreshArticles() {
+        _isLoading.value = false
+        _isRefreshing.value = true
+        getArticlesAll()
+    }
+
+    private fun getArticlesAll() {
         viewModelScope.launch {
-            _isRefreshing.value = true
             when (val result = getArticlesUseCase.execute(input = Unit)) {
                 is GetArticlesUseCase.Output.Success -> {
                     _articles.emit(result.articles)
-                    _isRefreshing.value = false
                 }
 
                 is GetArticlesUseCase.Output.Failure -> {
                     Log.e(LOG_TAG, "Error fetching articles")
-                    _isRefreshing.value = false
                 }
             }
+            kotlinx.coroutines.delay(800)
+            _isLoading.value = false
+            _isRefreshing.value = false
         }
     }
 
@@ -63,6 +80,16 @@ class ArticleListViewModel @Inject constructor(
     }
 
     fun getArticlesByFilters(gameFilter: List<GameFilter>, topicFilter: List<TopicFilter>) {
+        _isLoading.value = true
+        getWithFilters(gameFilter, topicFilter)
+    }
+
+    fun refreshArticlesByFilters(gameFilter: List<GameFilter>, topicFilter: List<TopicFilter>) {
+        _isRefreshing.value = true
+        getWithFilters(gameFilter, topicFilter)
+    }
+
+    private fun getWithFilters(gameFilter: List<GameFilter>, topicFilter: List<TopicFilter>) {
         val selectedGames = gameFilter.filter { it.isChecked }.map { it.gameId }
         val selectedTopics = topicFilter.filter { it.isChecked }.map { it.topicEnum }
         if (selectedGames.isEmpty() && selectedTopics.isEmpty()) {
@@ -70,28 +97,37 @@ class ArticleListViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            _isRefreshing.value = true
             when (val result = getArticlesUseCase.execute(input = Unit)) {
                 is GetArticlesUseCase.Output.Success -> {
                     _articles.emit(result.articles.filter { article ->
                         (selectedGames.isEmpty() || selectedGames.contains(article.gameId)) &&
                                 (selectedTopics.isEmpty() || selectedTopics.contains(article.topic))
                     })
-                    _isRefreshing.value = false
                 }
 
                 is GetArticlesUseCase.Output.Failure -> {
                     Log.e(LOG_TAG, "Error fetching articles by filters")
-                    _isRefreshing.value = false
                 }
             }
+            kotlinx.coroutines.delay(800)
+            _isLoading.value = false
+            _isRefreshing.value = false
         }
     }
 
     fun getArticlesByFilter(filter: Filter) {
+        _isLoading.value = true
+        getWithFilter(filter)
+    }
+
+    fun refreshArticlesByFilter(filter: Filter) {
+        _isRefreshing.value = true
+        getWithFilter(filter)
+    }
+
+    private fun getWithFilter(filter: Filter) {
         _browseFilter.value = filter
         viewModelScope.launch {
-            _isRefreshing.value = true
             when (val result = getArticlesUseCase.execute(input = Unit)) {
                 is GetArticlesUseCase.Output.Success -> {
                     _articles.emit(result.articles.filter { article ->
@@ -101,14 +137,15 @@ class ArticleListViewModel @Inject constructor(
                             else -> false
                         }
                     })
-                    _isRefreshing.value = false
                 }
 
                 is GetArticlesUseCase.Output.Failure -> {
                     Log.e(LOG_TAG, "Error fetching articles by filter")
-                    _isRefreshing.value = false
                 }
             }
+            kotlinx.coroutines.delay(800)
+            _isLoading.value = false
+            _isRefreshing.value = false
         }
     }
 
