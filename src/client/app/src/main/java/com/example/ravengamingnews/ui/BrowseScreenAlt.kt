@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -46,7 +47,6 @@ fun BrowseScreenAlt(
     val games = filtersViewModel.gameFilters.collectAsState().value
     val topics = filtersViewModel.topicFilters.collectAsState().value
     val browseFilter = articleListViewModel.browseFilter.collectAsState(null).value
-
 
     LaunchedEffect(Unit) {
         filtersViewModel.loadUserFilters()
@@ -100,9 +100,11 @@ fun BrowseScreenAlt(
         val isRefreshing = articleListViewModel.isRefreshing.collectAsState(false).value
         val articleList = articleListViewModel.articleList.collectAsState(initial = listOf()).value
         val clickedArticles by articleListViewModel.clickedArticles.collectAsState(initial = emptyMap())
+        val isLoading = articleListViewModel.isLoading.collectAsState(false).value
         ArticleList(
+            isLoading = isLoading,
             isRefreshing = isRefreshing,
-            onRefresh = { articleListViewModel.getArticlesByFilter(browseFilter) },
+            onRefresh = { articleListViewModel.refreshArticlesByFilter(browseFilter) },
             articleList = articleList,
             clickedArticles = clickedArticles,
             onClicked = { article ->
@@ -186,12 +188,20 @@ private fun ArticleList(
     articleList: List<Article>,
     clickedArticles: Map<Int, Boolean>,
     isRefreshing: Boolean,
+    isLoading: Boolean
 ) {
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         modifier = modifier.fillMaxSize()
     ) {
+        if (isLoading) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            )
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
