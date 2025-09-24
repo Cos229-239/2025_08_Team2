@@ -20,6 +20,11 @@ object AppRoutes {
         return route.startsWith("settings/")
     }
 
+    fun isHomeRoute(route: String?): Boolean {
+        if (route == null) return false
+        return route == HOME_FEED || route == HOME_BROWSE || route == HOME_ALL
+    }
+
     fun getTitleResId(route: String): Int {
         return when (route) {
             SETTINGS_EDIT_ACCOUNT -> R.string.account
