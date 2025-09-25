@@ -51,10 +51,11 @@ class ArticleListViewModel @Inject constructor(
     val browseFilter: Flow<Filter?> = _browseFilter
 
     init {
-        _isLoading.value = true
         _isRefreshing.value = false
-        loadSavedArticles()
-        _initialLoadComplete.value = true
+        viewModelScope.launch {
+            loadSavedArticles()
+            _initialLoadComplete.value = true
+        }
     }
 
     fun getArticles() {
