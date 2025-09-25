@@ -48,13 +48,14 @@ fun BrowseScreenAlt(
     val games = filtersViewModel.gameFilters.collectAsState().value
     val topics = filtersViewModel.topicFilters.collectAsState().value
     val browseFilter = articleListViewModel.browseFilter.collectAsState(null).value
+    val isInitialLoadComplete = articleListViewModel.initialLoadComplete.collectAsState().value
 
     LaunchedEffect(Unit) {
         filtersViewModel.loadUserFilters()
     }
 
-    LaunchedEffect(browseFilter) {
-        if (browseFilter != null) {
+    LaunchedEffect(browseFilter, isInitialLoadComplete) {
+        if (isInitialLoadComplete && browseFilter != null) {
             articleListViewModel.getArticlesByFilter(browseFilter)
         }
     }
