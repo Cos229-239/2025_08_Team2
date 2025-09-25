@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ravengamingnews.data.Filter
 import com.example.ravengamingnews.domain.model.Article
 import com.example.ravengamingnews.navigation.AppRoutes
@@ -41,7 +42,7 @@ import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 fun BrowseScreenAlt(
     modifier: Modifier = Modifier,
     filtersViewModel: FiltersViewModel,
-    articleListViewModel: ArticleListViewModel,
+    articleListViewModel: ArticleListViewModel = hiltViewModel(),
     navigationViewModel: NavigationViewModel
 ) {
     val games = filtersViewModel.gameFilters.collectAsState().value
