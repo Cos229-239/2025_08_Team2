@@ -23,6 +23,7 @@ class UserPreferencesImpl @Inject constructor(
     companion object {
         private const val PREFS_NAME = "raven_gaming_prefs"
         private const val KEY_GUEST_FILTERS = "guest_user_filters"
+        private const val KEY_SAVED_ARTICLES = "saved_articles"
     }
 
     private val masterKey = MasterKey.Builder(context)
@@ -52,5 +53,24 @@ class UserPreferencesImpl @Inject constructor(
             Log.e(LOG_TAG, "Error decoding guest filters: ${e.message}")
             null
         }
+    }
+
+    override suspend fun savedArticles(): Set<Int> {
+        val articles = prefs.getStringSet(KEY_SAVED_ARTICLES, emptySet()) ?: emptySet()
+        return articles.mapNotNull { it.toIntOrNull() }.toSet()
+    }
+
+    override suspend fun saveArticle(articleId: Int): Set<Int> {
+        val currentArticles = prefs.getStringSet(KEY_SAVED_ARTICLES, emptySet()) ?: emptySet()
+        val updatedArticles = currentArticles.toMutableSet().apply { add(articleId.toString()) }
+        prefs.edit { putStringSet(KEY_SAVED_ARTICLES, updatedArticles) }
+        return updatedArticles.mapNotNull { it.toIntOrNull() }.toSet()
+    }
+
+    override suspend fun removeArticle(articleId: Int): Set<Int> {
+        val currentArticles = prefs.getStringSet(KEY_SAVED_ARTICLES, emptySet()) ?: emptySet()
+        val updatedArticles = currentArticles.toMutableSet().apply { remove(articleId.toString()) }
+        prefs.edit { putStringSet(KEY_SAVED_ARTICLES, updatedArticles) }
+        return updatedArticles.mapNotNull { it.toIntOrNull() }.toSet()
     }
 }
