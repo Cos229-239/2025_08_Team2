@@ -223,6 +223,8 @@ fun ArticleCard(
     articlePreview: String,
     articleDate: Instant,
     wasClicked: Boolean,
+    isSaved: Boolean,
+    onSaveClick: () -> Unit,
     onClick: () -> Unit
 ) {
     val articleCardColor = if (wasClicked) MaterialTheme.colorScheme.tertiary
