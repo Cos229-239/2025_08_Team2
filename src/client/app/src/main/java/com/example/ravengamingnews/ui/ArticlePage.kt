@@ -31,12 +31,9 @@ fun ArticlePage(
     articleId: String?,
     articleListViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
+
     val id = articleId?.toIntOrNull()
-    val article = if (id != null) {
-        articleListViewModel.getArticleById(id)
-    } else {
-        null
-    }
+    val article = articleListViewModel.articleList.collectAsState(emptyList()).value.find { it.id == id }
 
     if (article == null) {
         Text("Article not found", modifier = Modifier.padding(8.dp))

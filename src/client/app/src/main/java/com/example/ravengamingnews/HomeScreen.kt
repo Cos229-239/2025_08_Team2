@@ -161,7 +161,6 @@ fun HomeScreen(
 ) {
     val navController = rememberNavController()
     val navigationViewModel: NavigationViewModel = hiltViewModel()
-    val articleListViewModel: ArticleListViewModel = hiltViewModel()
     val editAccountViewModel: EditAccountViewModel = hiltViewModel()
     val filtersViewModel: FiltersViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -202,18 +201,16 @@ fun HomeScreen(
 //                FeedScreen(navigationViewModel, articleListViewModel)
                 FeedScreenAlt(
                     navigationViewModel = navigationViewModel,
-                    articlesViewModel = articleListViewModel,
                     filtersViewModel = filtersViewModel
                 )
             }
             composable(route = AppRoutes.HOME_ALL) {
-                AllTabContent(navigationViewModel, articleListViewModel)
+                AllTabContent(navigationViewModel)
             }
             composable(route = AppRoutes.HOME_BROWSE) {
 //                BrowseScreen()
                 BrowseScreenAlt(
                     filtersViewModel = filtersViewModel,
-                    articleListViewModel = articleListViewModel,
                     navigationViewModel = navigationViewModel
                 )
             }
@@ -244,7 +241,7 @@ fun HomeScreen(
                 })
             ) { backStackEntry ->
                 val articleId = backStackEntry.arguments?.getString("articleId")
-                ArticlePage(articleId = articleId, articleListViewModel)
+                ArticlePage(articleId = articleId)
             }
         }
     }
