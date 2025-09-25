@@ -53,8 +53,11 @@ class ArticleListViewModel @Inject constructor(
         _isRefreshing.value = false
         viewModelScope.launch {
             loadSavedArticles()
-            _initialLoadComplete.value = true
         }
+    }
+
+    fun setInitialLoadComplete() {
+        _initialLoadComplete.value = true
     }
 
     fun getArticles() {
@@ -104,9 +107,11 @@ class ArticleListViewModel @Inject constructor(
         val selectedGames = gameFilter.filter { it.isChecked }.map { it.gameId }
         val selectedTopics = topicFilter.filter { it.isChecked }.map { it.topicEnum }
         if (selectedGames.isEmpty() && selectedTopics.isEmpty()) {
+            Log.d(LOG_TAG, "No filters selected, fetching all articles")
             getArticles()
             return
         }
+        Log.d(LOG_TAG, "Fetching articles with filters: Games=$selectedGames, Topics=$selectedTopics")
         viewModelScope.launch {
             when (val result = getArticlesUseCase.execute(input = Unit)) {
                 is GetArticlesUseCase.Output.Success -> {
