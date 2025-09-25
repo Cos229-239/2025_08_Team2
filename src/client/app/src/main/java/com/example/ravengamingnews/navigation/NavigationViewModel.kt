@@ -1,11 +1,14 @@
 package com.example.ravengamingnews.navigation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
+
+private const val LOG_TAG = "NavigationViewModel"
 
 /**
  * ViewModel to centralize navigation logic and reduce the need to pass NavController
@@ -23,7 +26,10 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navController = navController
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.route != null && AppRoutes.isHomeRoute(destination.route)) {
+                Log.d(LOG_TAG, "Navigated to ${destination.route}")
                 _currentRoute.value = destination.route
+            } else {
+                Log.d(LOG_TAG, "Destination route is ${destination.route}, not updating currentRoute")
             }
         }
     }
@@ -40,9 +46,8 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
      * to ensure consistent tab selection behavior.
      */
     fun navigateToMainTab(route: String) {
-        if (route == _currentRoute.value) {
-            return
-        }
+        Log.d(LOG_TAG, "Navigating to main tab: $route")
+        _currentRoute.value = route
         _navController?.let { navController ->
             navController.navigate(route) {
                 // Pop up to the start destination to avoid building up a large stack
