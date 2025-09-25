@@ -52,6 +52,7 @@ fun BrowseScreenAlt(
 
     LaunchedEffect(Unit) {
         filtersViewModel.loadUserFilters()
+        articleListViewModel.setInitialLoadComplete()
     }
 
     LaunchedEffect(browseFilter, isInitialLoadComplete) {

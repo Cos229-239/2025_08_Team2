@@ -40,10 +40,11 @@ fun FeedScreenAlt(
 
     LaunchedEffect(Unit) {
         filtersViewModel.loadUserFilters()
+        articlesViewModel.setInitialLoadComplete()
     }
 
     LaunchedEffect(gameFilters, topicFilters, initialLoadComplete) {
-        if (initialLoadComplete) {
+        if (initialLoadComplete && gameFilters.isNotEmpty() && topicFilters.isNotEmpty()) {
             articlesViewModel.getArticlesByFilters(gameFilters, topicFilters)
         }
     }
