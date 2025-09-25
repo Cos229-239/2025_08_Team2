@@ -8,10 +8,14 @@ import com.example.ravengamingnews.data.GameFilter
 import com.example.ravengamingnews.data.TopicFilter
 import com.example.ravengamingnews.domain.model.Article
 import com.example.ravengamingnews.domain.usecase.GetArticlesUseCase
+import com.example.ravengamingnews.domain.usecase.GetSavedArticlesUseCase
+import com.example.ravengamingnews.domain.usecase.RemoveSavedArticleUseCase
+import com.example.ravengamingnews.domain.usecase.SaveArticleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,10 +24,12 @@ private const val LOG_TAG = "ArticleListViewModel"
 @HiltViewModel
 class ArticleListViewModel @Inject constructor(
     private val getArticlesUseCase: GetArticlesUseCase,
-
+    private val getSavedArticlesUseCase: GetSavedArticlesUseCase,
+    private val saveArticleUseCase: SaveArticleUseCase,
+    private val removeSavedArticleUseCase: RemoveSavedArticleUseCase
 ) : ViewModel() {
 
-    private val _savedArticles: MutableStateFlow<Set<Int>> = MutableStateFlow<Set<Int>>(emptySet())
+    private val _savedArticles: MutableStateFlow<Set<Int>> = MutableStateFlow(emptySet())
     val savedArticles: Flow<Set<Int>> = _savedArticles
     private val _clickedArticles = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val clickedArticles: Flow<Map<Int, Boolean>> = _clickedArticles
@@ -44,6 +50,7 @@ class ArticleListViewModel @Inject constructor(
         _isLoading.value = true
         _isRefreshing.value = false
         getArticles()
+        loadSavedArticles()
     }
 
     fun getArticles() {
@@ -77,10 +84,6 @@ class ArticleListViewModel @Inject constructor(
 
     fun clearFilters() {
         _browseFilter.value = null
-    }
-
-    fun getArticleById(id: Int): Article? {
-        return _articles.value.find { it.id == id }
     }
 
     fun getArticlesByFilters(gameFilter: List<GameFilter>, topicFilter: List<TopicFilter>) {
@@ -158,15 +161,52 @@ class ArticleListViewModel @Inject constructor(
     }
 
     fun toggleSaveArticle(articleId: Int) {
-        val current = _savedArticles.value
-        _savedArticles.value = if (current.contains(articleId)) {
-            current - articleId
+        if (_savedArticles.value.contains(articleId)) {
+            removeSavedArticle(articleId)
         } else {
-            current + articleId
+            saveArticle(articleId)
         }
     }
 
-    fun getSavedArticles(): List<Article> {
-        return _articles.value?.filter {_savedArticles.value.contains(it.id) } ?: emptyList()
+    fun loadSavedArticles() {
+        viewModelScope.launch {
+            when (val result = getSavedArticlesUseCase.execute(input = Unit)) {
+                is GetSavedArticlesUseCase.Output.Success -> {
+                    _savedArticles.emit(result.savedArticleIds)
+                }
+
+                is GetSavedArticlesUseCase.Output.Failure -> {
+                    Log.e(LOG_TAG, "Error fetching saved articles")
+                }
+            }
+        }
+    }
+
+    private fun saveArticle(articleId: Int) {
+        viewModelScope.launch {
+            when (val result = saveArticleUseCase.execute(input = articleId)) {
+                is SaveArticleUseCase.Output.Success -> {
+                    _savedArticles.emit(result.savedArticles)
+                }
+
+                is SaveArticleUseCase.Output.Failure -> {
+                    Log.e(LOG_TAG, "Error saving article")
+                }
+            }
+        }
+    }
+
+    private fun removeSavedArticle(articleId: Int) {
+        viewModelScope.launch {
+            when (val result = removeSavedArticleUseCase.execute(input = articleId)) {
+                is RemoveSavedArticleUseCase.Output.Success -> {
+                    _savedArticles.emit(result.savedArticles)
+                }
+
+                is RemoveSavedArticleUseCase.Output.Failure -> {
+                    Log.e(LOG_TAG, "Error removing saved article")
+                }
+            }
+        }
     }
 }

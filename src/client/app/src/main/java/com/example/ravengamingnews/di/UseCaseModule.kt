@@ -31,4 +31,12 @@ abstract class UseCaseModule {
     @Binds
     abstract fun bindUpdateUserFiltersUseCase(impl: UpdateUserFiltersUseCaseImpl): UpdateUserFiltersUseCase
 
+    @Binds
+    abstract fun bindSaveArticleUseCase(impl: SaveArticleUseCaseImpl): SaveArticleUseCase
+
+    @Binds
+    abstract fun bindRemoveArticleUseCase(impl: RemoveSavedArticleUseCaseImpl): RemoveSavedArticleUseCase
+
+    @Binds
+    abstract fun bindGetSavedArticlesUseCase(impl: GetSavedArticlesUseCaseImpl): GetSavedArticlesUseCase
 }

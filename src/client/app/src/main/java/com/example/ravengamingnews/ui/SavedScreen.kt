@@ -11,11 +11,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
@@ -27,14 +29,18 @@ import kotlin.time.Clock
 @Composable
 fun SavedScreen(
     navigationViewModel: NavigationViewModel,
-    articlesViewModel: ArticleListViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    articlesViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
-    val savedArticles by articlesViewModel.savedArticles.collectAsState(initial = emptySet())
+
+    LaunchedEffect(Unit) {
+        articlesViewModel.loadSavedArticles()
+    }
+
     val articleList = articlesViewModel.articleList.collectAsState(initial = listOf()).value
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
-
-    val savedList = articleList?.filter {savedArticles.contains(it.id)} ?: emptyList()
+    val savedArticles by articlesViewModel.savedArticles.collectAsState(initial = emptySet())
+    val savedList = articleList.filter { savedArticles.contains(it.id) }
 
     if(savedList.isEmpty()){
         Column(

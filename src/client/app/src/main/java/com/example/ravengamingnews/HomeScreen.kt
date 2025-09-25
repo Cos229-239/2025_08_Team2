@@ -41,18 +41,17 @@ import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.AboutScreen
 import com.example.ravengamingnews.ui.AllTabContent
 import com.example.ravengamingnews.ui.ArticlePage
+import com.example.ravengamingnews.ui.BrowseScreenAlt
 import com.example.ravengamingnews.ui.EditAccountScreen
+import com.example.ravengamingnews.ui.EditAccountViewModel
+import com.example.ravengamingnews.ui.FeedScreenAlt
+import com.example.ravengamingnews.ui.FiltersScreenAlt
+import com.example.ravengamingnews.ui.FiltersViewModel
 import com.example.ravengamingnews.ui.SavedScreen
 import com.example.ravengamingnews.ui.SupportScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
-import com.example.ravengamingnews.ui.ArticleListViewModel
-import com.example.ravengamingnews.ui.BrowseScreenAlt
-import com.example.ravengamingnews.ui.EditAccountViewModel
-import com.example.ravengamingnews.ui.FeedScreenAlt
-import com.example.ravengamingnews.ui.FiltersScreenAlt
-import com.example.ravengamingnews.ui.FiltersViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -184,24 +183,19 @@ fun HomeScreen(
                 SettingsTopAppBar(
                     title = stringResource(
                         AppRoutes.getTitleResId(currentRoute)
-                    ),
-                    onBackClicked = { navigationViewModel.navigateUp() }
-                )
+                    ), onBackClicked = { navigationViewModel.navigateUp() })
             }
-        }
-    ) { innerPadding ->
+        }) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = AppRoutes.HOME_FEED,
             modifier = Modifier.padding(innerPadding),
             enterTransition = { fadeIn(animationSpec = tween(500)) },
-            exitTransition = { fadeOut(animationSpec = tween(500)) }
-        ) {
+            exitTransition = { fadeOut(animationSpec = tween(500)) }) {
             composable(route = AppRoutes.HOME_FEED) {
 //                FeedScreen(navigationViewModel, articleListViewModel)
                 FeedScreenAlt(
-                    navigationViewModel = navigationViewModel,
-                    filtersViewModel = filtersViewModel
+                    navigationViewModel = navigationViewModel, filtersViewModel = filtersViewModel
                 )
             }
             composable(route = AppRoutes.HOME_ALL) {
@@ -210,8 +204,7 @@ fun HomeScreen(
             composable(route = AppRoutes.HOME_BROWSE) {
 //                BrowseScreen()
                 BrowseScreenAlt(
-                    filtersViewModel = filtersViewModel,
-                    navigationViewModel = navigationViewModel
+                    filtersViewModel = filtersViewModel, navigationViewModel = navigationViewModel
                 )
             }
             composable(route = AppRoutes.SETTINGS_EDIT_ACCOUNT) {
@@ -222,10 +215,7 @@ fun HomeScreen(
                 FiltersScreenAlt(viewModel = filtersViewModel)
             }
             composable(route = AppRoutes.SETTINGS_SAVED) {
-                SavedScreen(
-                    navigationViewModel = navigationViewModel,
-                    articlesViewModel = articleListViewModel
-                )
+                SavedScreen(navigationViewModel = navigationViewModel)
             }
             composable(route = AppRoutes.SETTINGS_SUPPORT) {
                 SupportScreen()
@@ -234,10 +224,8 @@ fun HomeScreen(
                 AboutScreen()
             }
             composable(
-                route = AppRoutes.ARTICLE_DETAILS,
-                arguments = listOf(navArgument("articleId") {
-                    type =
-                        NavType.StringType
+                route = AppRoutes.ARTICLE_DETAILS, arguments = listOf(navArgument("articleId") {
+                    type = NavType.StringType
                 })
             ) { backStackEntry ->
                 val articleId = backStackEntry.arguments?.getString("articleId")
@@ -252,9 +240,7 @@ fun HomeScreen(
 fun SettingsTopAppBarPreview() {
     RavenGamingNewsTheme {
         SettingsTopAppBar(
-            title = stringResource(R.string.account),
-            onBackClicked = {}
-        )
+            title = stringResource(R.string.account), onBackClicked = {})
     }
 }
 
