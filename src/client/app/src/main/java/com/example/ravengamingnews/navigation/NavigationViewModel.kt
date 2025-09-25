@@ -22,6 +22,25 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         _navController?.navigate(route)
     }
 
+    /**
+     * Navigate to a main tab destination with proper navigation options
+     * to ensure consistent tab selection behavior.
+     */
+    fun navigateToMainTab(route: String) {
+        _navController?.let { navController ->
+            navController.navigate(route) {
+                // Pop up to the start destination to avoid building up a large stack
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                // Avoid multiple copies of the same destination when reselecting the same item
+                launchSingleTop = true
+                // Restore state when reselecting a previously selected item
+                restoreState = true
+            }
+        }
+    }
+
     fun navigateUp() {
         _navController?.navigateUp()
     }

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  * Data class representing a news article.
  */
 @Serializable
-data class ArticleWithGameDto(
+data class ArticleDto(
     @SerialName("id")
     val id: Int,
     @SerialName("created_at")
@@ -24,6 +24,11 @@ data class ArticleWithGameDto(
     val date: String,
     @SerialName("game")
     val game: GameDto,
+    /**
+     * The topic of the article, which can be null if not specified.
+     * See [TopicEnum] for possible values.
+     * Null values should be handled appropriately in the UI as undefined or uncategorized.
+     */
     @SerialName("topic")
-    val topic: String,
+    val topic: TopicEnum?,
 )

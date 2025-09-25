@@ -1,9 +1,10 @@
 package com.example.ravengamingnews.domain.usecase.impl
 
 import com.example.ravengamingnews.data.ArticleRepository
-import com.example.ravengamingnews.data.ArticleWithGameDto
+import com.example.ravengamingnews.data.ArticleDto
 import com.example.ravengamingnews.domain.model.Article
 import com.example.ravengamingnews.domain.usecase.GetArticlesUseCase
+import com.example.ravengamingnews.util.ResourceMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,14 +23,16 @@ class GetArticlesUseCaseImpl @Inject constructor(
             } ?: GetArticlesUseCase.Output.Failure
         }
 
-    private fun ArticleWithGameDto.asDomainModel() = Article(
+    private fun ArticleDto.asDomainModel() = Article(
         id = this.id,
         title = this.title,
         summary = this.summary,
         content = this.content,
         author = this.author,
         date = Instant.Companion.parse(this.date),
-        game = this.game.name,
-        topic = this.topic
+        gameId = this.game.id,
+        gameNameResId = ResourceMapper.getGameNameResourceId(this.game.id),
+        topic = this.topic,
+        topicNameResId = ResourceMapper.getTopicNameResourceId(this.topic)
     )
 }

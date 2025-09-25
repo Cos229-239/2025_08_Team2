@@ -12,8 +12,7 @@ import io.github.jan.supabase.auth.FlowType
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
-//import io.github.jan.supabase.storage.Storage
-//import io.github.jan.supabase.storage.storage
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 
@@ -49,11 +48,14 @@ object SupabaseModule {
         return client.auth
     }
 
-
-//    @Provides
-//    @Singleton
-//    fun provideSupabaseStorage(client: SupabaseClient): Storage {
-//        return client.storage
-//    }
-
+    @Provides
+    @Singleton
+    fun provideJson(): Json {
+        return Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+            prettyPrint = false
+            encodeDefaults = true
+        }
+    }
 }
