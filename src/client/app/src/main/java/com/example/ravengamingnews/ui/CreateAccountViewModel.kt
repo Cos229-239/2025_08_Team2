@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import javax.inject.Inject
 
-const val LOG_TAG = "CreateAccountViewModel"
+private const val LOG_TAG = "CreateAccountViewModel"
 
 @HiltViewModel
 class CreateAccountViewModel @Inject constructor(

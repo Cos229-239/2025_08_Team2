@@ -18,4 +18,17 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindAuthenticateUseCase(impl: SignInUseCaseImpl): SignInUseCase
+
+    @Binds
+    abstract fun bindGetUserProfileUseCase(impl: GetUserProfileUseCaseImpl): GetUserProfileUseCase
+
+    @Binds
+    abstract fun bindUpdateUserProfileUseCase(impl: UpdateUserProfileUseCaseImpl): UpdateUserProfileUseCase
+
+    @Binds
+    abstract fun bindGetUserFiltersUseCase(impl: GetUserFiltersUseCaseImpl): GetUserFiltersUseCase
+
+    @Binds
+    abstract fun bindUpdateUserFiltersUseCase(impl: UpdateUserFiltersUseCaseImpl): UpdateUserFiltersUseCase
+
 }

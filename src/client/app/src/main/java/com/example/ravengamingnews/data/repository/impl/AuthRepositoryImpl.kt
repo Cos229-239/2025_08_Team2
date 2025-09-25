@@ -2,6 +2,7 @@ package com.example.ravengamingnews.data.repository.impl
 
 import android.util.Log
 import com.example.ravengamingnews.data.AuthRepository
+import com.example.ravengamingnews.data.local.UserPreferencesRepository
 import com.example.ravengamingnews.domain.model.AuthState
 import com.example.ravengamingnews.domain.model.UserFilters
 import com.example.ravengamingnews.domain.model.UserMetadata
@@ -9,6 +10,7 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionSource
 import io.github.jan.supabase.auth.status.SessionStatus
+import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -27,7 +29,8 @@ private const val logTag = "AuthRepository"
 
 class AuthRepositoryImpl @Inject constructor(
     private val auth: Auth,
-    private val json: Json
+    private val json: Json,
+    private val userPreferences: UserPreferencesRepository
 ) : AuthRepository {
 
     private val _authState: MutableStateFlow<AuthState> = MutableStateFlow(AuthState.Initializing)
@@ -35,6 +38,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     private val _isGuest: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val continuedAsGuest: StateFlow<Boolean> = _isGuest
+
+    private val _userInfo: MutableStateFlow<UserInfo?> = MutableStateFlow(null)
+    override val userInfo: StateFlow<UserInfo?> = _userInfo
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -59,7 +65,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun signUp(email: String, password: String, firstName: String, lastName: String, dateOfBirth: LocalDate): Boolean {
+    override suspend fun signUp(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        dateOfBirth: LocalDate
+    ): Boolean {
         return try {
             val metadata = UserMetadata(
                 firstName = firstName,
@@ -82,43 +94,75 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserProfile(email: String, password: String, firstName: String, lastName: String, dateOfBirth: LocalDate): Boolean {
+    override suspend fun refreshUserProfile(): UserInfo? {
+        auth.refreshCurrentSession()
         val user = auth.currentUserOrNull()
         return if (user != null) {
             try {
-                val currentMetadata = getUserMetadata() ?: UserMetadata(
-                    firstName = firstName,
-                    lastName = lastName,
-                    dateOfBirth = dateOfBirth,
-                    filters = UserFilters()
-                )
+                _userInfo.value = user
+                return user
+            } catch (e: Exception) {
+                Log.e(logTag, "RefreshUserProfile error: ${e.message}")
+                null
+            }
+        } else {
+            Log.e(logTag, "RefreshUserProfile error: No authenticated user")
+            null
+        }
+    }
+
+    override suspend fun updateUserProfile(email: String, firstName: String, lastName: String): Pair<Boolean, Boolean> {
+        val user = auth.currentUserOrNull()
+        return if (user != null) {
+            val requiresConfirmation = email.isNotEmpty() && email != user.email
+            try {
+                val currentMetadata = getUserMetadata() ?: return Pair(false, false)
 
                 val updatedMetadata = currentMetadata.copy(
                     firstName = firstName,
                     lastName = lastName,
-                    dateOfBirth = dateOfBirth
                 )
 
                 val metadataJson = json.encodeToString(UserMetadata.serializer(), updatedMetadata)
 
+                if (user.email != email && email.isNotEmpty()) {
+                    auth.updateUser {
+                        this.email = email
+                    }
+                }
                 auth.updateUser {
-                    this.email = email
-                    this.password = password
                     data = json.parseToJsonElement(metadataJson).jsonObject
                 }
-                true
+                return Pair(true, requiresConfirmation)
             } catch (e: Exception) {
                 Log.e(logTag, "UpdateUserProfile error: ${e.message}")
-                false
+                Pair(false, false)
             }
         } else {
             Log.e(logTag, "UpdateUserProfile error: No authenticated user")
-            false
+            Pair(false, false)
         }
     }
 
     override suspend fun getUserMetadata(): UserMetadata? {
-        val user = auth.currentUserOrNull() ?: return null
+        val user = auth.currentUserOrNull()
+
+        // For guest users, return default metadata with locally stored filters
+        if (_isGuest.value) {
+            val guestFilters = userPreferences.getGuestFilters() ?: UserFilters()
+            return UserMetadata(
+                firstName = "Guest",
+                lastName = "User",
+                dateOfBirth = LocalDate(2000, 1, 1), // Default date
+                filters = guestFilters
+            )
+        }
+
+        if (user == null) {
+            return null
+        }
+
+        // For authenticated users, parse metadata from Supabase
         return try {
             val userData = user.userMetadata
 
@@ -152,6 +196,18 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUserFilters(filters: UserFilters): Boolean {
+        // For guest users, store filters in local storage
+        if (_isGuest.value) {
+            try {
+                userPreferences.saveGuestFilters(filters)
+                return true
+            } catch (e: Exception) {
+                Log.e(logTag, "Error saving guest filters to local storage: ${e.message}")
+                return false
+            }
+        }
+
+        // For authenticated users, update filters in Supabase
         return try {
             val currentMetadata = getUserMetadata() ?: return false
             val updatedMetadata = currentMetadata.copy(filters = filters)
@@ -192,6 +248,7 @@ class AuthRepositoryImpl @Inject constructor(
                 )
                 _isGuest.value = sessionStatus.source == SessionSource.AnonymousSignIn ||
                         sessionStatus.session.user?.email.isNullOrEmpty()
+                _userInfo.value = sessionStatus.session.user
                 _authState.value = AuthState.Authenticated
             }
 

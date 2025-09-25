@@ -38,16 +38,20 @@ import androidx.navigation.navArgument
 import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.AboutScreen
+import com.example.ravengamingnews.ui.AllTabContent
 import com.example.ravengamingnews.ui.ArticlePage
 import com.example.ravengamingnews.ui.EditAccountScreen
-import com.example.ravengamingnews.ui.FeedScreen
-import com.example.ravengamingnews.ui.FiltersScreen
 import com.example.ravengamingnews.ui.SavedScreen
 import com.example.ravengamingnews.ui.SupportScreen
 import com.example.ravengamingnews.ui.components.LogoImagePR
 import com.example.ravengamingnews.ui.components.TopAppBarButtonPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import com.example.ravengamingnews.ui.ArticleListViewModel
+import com.example.ravengamingnews.ui.BrowseScreenAlt
+import com.example.ravengamingnews.ui.EditAccountViewModel
+import com.example.ravengamingnews.ui.FeedScreenAlt
+import com.example.ravengamingnews.ui.FiltersScreenAlt
+import com.example.ravengamingnews.ui.FiltersViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -91,8 +95,9 @@ private fun TopAppBarPR(
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.all),
-                            onClick = {},
-                            modifier.padding(8.dp)
+                            onClick = { navigationViewModel.navigateToMainTab(AppRoutes.HOME_ALL) },
+                            modifier.padding(8.dp),
+                            selected = currentRoute == AppRoutes.HOME_ALL
                         )
                         TopAppBarButtonPR(
                             text = stringResource(R.string.browse),
@@ -158,6 +163,8 @@ fun HomeScreen(
     val navController = rememberNavController()
     val navigationViewModel: NavigationViewModel = hiltViewModel()
     val articleListViewModel: ArticleListViewModel = hiltViewModel()
+    val editAccountViewModel: EditAccountViewModel = hiltViewModel()
+    val filtersViewModel: FiltersViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
 
@@ -193,19 +200,30 @@ fun HomeScreen(
             exitTransition = { fadeOut(animationSpec = tween(500)) }
         ) {
             composable(route = AppRoutes.HOME_FEED) {
-                FeedScreen(navigationViewModel, articleListViewModel)
+//                FeedScreen(navigationViewModel, articleListViewModel)
+                FeedScreenAlt(
+                    navigationViewModel = navigationViewModel,
+                    articlesViewModel = articleListViewModel,
+                    filtersViewModel = filtersViewModel
+                )
             }
             composable(route = AppRoutes.HOME_ALL) {
-                // AllScreen(navigationViewModel)
+                AllTabContent(navigationViewModel, articleListViewModel)
             }
             composable(route = AppRoutes.HOME_BROWSE) {
-                BrowseScreen()
+//                BrowseScreen()
+                BrowseScreenAlt(
+                    filtersViewModel = filtersViewModel,
+                    articleListViewModel = articleListViewModel,
+                    navigationViewModel = navigationViewModel
+                )
             }
             composable(route = AppRoutes.SETTINGS_EDIT_ACCOUNT) {
-                EditAccountScreen()
+                EditAccountScreen(viewModel = editAccountViewModel)
             }
             composable(route = AppRoutes.SETTINGS_FILTERS) {
-                FiltersScreen()
+//                FiltersScreen()
+                FiltersScreenAlt(viewModel = filtersViewModel)
             }
             composable(route = AppRoutes.SETTINGS_SAVED) {
                 SavedScreen(
