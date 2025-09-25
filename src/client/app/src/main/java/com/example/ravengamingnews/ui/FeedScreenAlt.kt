@@ -36,13 +36,14 @@ fun FeedScreenAlt(
     val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
     val isLoading = articlesViewModel.isLoading.collectAsState(false).value
     val savedArticles by articlesViewModel.savedArticles.collectAsState(initial = emptySet())
+    val initialLoadComplete = articlesViewModel.initialLoadComplete.collectAsState().value
 
     LaunchedEffect(Unit) {
         filtersViewModel.loadUserFilters()
     }
 
-    LaunchedEffect(gameFilters, topicFilters) {
-        if (gameFilters.isNotEmpty() && topicFilters.isNotEmpty()) {
+    LaunchedEffect(gameFilters, topicFilters, initialLoadComplete) {
+        if (initialLoadComplete) {
             articlesViewModel.getArticlesByFilters(gameFilters, topicFilters)
         }
     }

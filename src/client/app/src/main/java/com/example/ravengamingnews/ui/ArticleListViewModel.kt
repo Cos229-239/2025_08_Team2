@@ -29,6 +29,10 @@ class ArticleListViewModel @Inject constructor(
     private val removeSavedArticleUseCase: RemoveSavedArticleUseCase
 ) : ViewModel() {
 
+    // Add this new state to track if initial loading has completed
+    private val _initialLoadComplete = MutableStateFlow(false)
+    val initialLoadComplete: StateFlow<Boolean> = _initialLoadComplete
+
     private val _savedArticles: MutableStateFlow<Set<Int>> = MutableStateFlow(emptySet())
     val savedArticles: Flow<Set<Int>> = _savedArticles
     private val _clickedArticles = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
@@ -49,8 +53,8 @@ class ArticleListViewModel @Inject constructor(
     init {
         _isLoading.value = true
         _isRefreshing.value = false
-        getArticles()
         loadSavedArticles()
+        _initialLoadComplete.value = true
     }
 
     fun getArticles() {
