@@ -15,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -112,8 +111,9 @@ class ArticleListViewModel @Inject constructor(
             when (val result = getArticlesUseCase.execute(input = Unit)) {
                 is GetArticlesUseCase.Output.Success -> {
                     _articles.emit(result.articles.filter { article ->
-                        (selectedGames.isEmpty() || selectedGames.contains(article.gameId)) &&
-                                (selectedTopics.isEmpty() || selectedTopics.contains(article.topic))
+                        (selectedGames.isEmpty() || selectedGames.contains(article.gameId)) && (selectedTopics.isEmpty() || selectedTopics.contains(
+                            article.topic
+                        ))
                     })
                 }
 
