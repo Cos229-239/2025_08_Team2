@@ -66,6 +66,8 @@ fun FeedScreen(
                     item.author,
                     item.summary,
                     item.date,
+                    isSaved = false,
+                    onSaveClick = { },
                     wasClicked = isClicked,
                     onClick = {
                         articlesViewModel.markArticleClicked(item.id)

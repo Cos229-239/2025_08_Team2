@@ -101,12 +101,15 @@ fun BrowseScreenAlt(
         val articleList = articleListViewModel.articleList.collectAsState(initial = listOf()).value
         val clickedArticles by articleListViewModel.clickedArticles.collectAsState(initial = emptyMap())
         val isLoading = articleListViewModel.isLoading.collectAsState(false).value
+        val savedArticles by articleListViewModel.savedArticles.collectAsState(initial = emptySet())
         ArticleList(
             isLoading = isLoading,
             isRefreshing = isRefreshing,
             onRefresh = { articleListViewModel.refreshArticlesByFilter(browseFilter) },
             articleList = articleList,
             clickedArticles = clickedArticles,
+            savedArticles = savedArticles,
+            articlesViewModel = articleListViewModel,
             onClicked = { article ->
                 articleListViewModel.markArticleClicked(article.id)
                 navigationViewModel.navigateTo(
@@ -188,7 +191,9 @@ private fun ArticleList(
     articleList: List<Article>,
     clickedArticles: Map<Int, Boolean>,
     isRefreshing: Boolean,
-    isLoading: Boolean
+    isLoading: Boolean,
+    savedArticles: Set<Int>,
+    articlesViewModel: ArticleListViewModel
 ) {
     PullToRefreshBox(
         isRefreshing = isRefreshing,
@@ -227,6 +232,8 @@ private fun ArticleList(
                     item.author,
                     item.summary,
                     item.date,
+                    isSaved = savedArticles.contains(item.id),
+                    onSaveClick = { articlesViewModel.toggleSaveArticle(item.id) },
                     wasClicked = isClicked,
                     onClick = { onClicked(item) }
                 )

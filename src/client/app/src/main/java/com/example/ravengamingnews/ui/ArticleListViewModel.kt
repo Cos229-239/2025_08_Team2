@@ -20,7 +20,11 @@ private const val LOG_TAG = "ArticleListViewModel"
 @HiltViewModel
 class ArticleListViewModel @Inject constructor(
     private val getArticlesUseCase: GetArticlesUseCase,
+
 ) : ViewModel() {
+
+    private val _savedArticles: MutableStateFlow<Set<Int>> = MutableStateFlow<Set<Int>>(emptySet())
+    val savedArticles: Flow<Set<Int>> = _savedArticles
     private val _clickedArticles = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val clickedArticles: Flow<Map<Int, Boolean>> = _clickedArticles
 
@@ -151,5 +155,18 @@ class ArticleListViewModel @Inject constructor(
 
     fun markArticleClicked(articleId: Int) {
         _clickedArticles.value = _clickedArticles.value + (articleId to true)
+    }
+
+    fun toggleSaveArticle(articleId: Int) {
+        val current = _savedArticles.value
+        _savedArticles.value = if (current.contains(articleId)) {
+            current - articleId
+        } else {
+            current + articleId
+        }
+    }
+
+    fun getSavedArticles(): List<Article> {
+        return _articles.value?.filter {_savedArticles.value.contains(it.id) } ?: emptyList()
     }
 }

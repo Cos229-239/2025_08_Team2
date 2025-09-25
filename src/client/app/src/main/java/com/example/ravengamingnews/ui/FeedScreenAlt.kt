@@ -35,6 +35,7 @@ fun FeedScreenAlt(
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
     val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
     val isLoading = articlesViewModel.isLoading.collectAsState(false).value
+    val savedArticles by articlesViewModel.savedArticles.collectAsState(initial = emptySet())
 
     LaunchedEffect(Unit) {
         filtersViewModel.loadUserFilters()
@@ -85,6 +86,8 @@ fun FeedScreenAlt(
                     item.author,
                     item.summary,
                     item.date,
+                    isSaved = savedArticles.contains(item.id),
+                    onSaveClick = { articlesViewModel.toggleSaveArticle(item.id) },
                     wasClicked = isClicked,
                     onClick = {
                         articlesViewModel.markArticleClicked(item.id)
