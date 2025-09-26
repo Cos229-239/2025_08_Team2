@@ -40,6 +40,7 @@ import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.AboutScreen
 import com.example.ravengamingnews.ui.AllTabContent
+import com.example.ravengamingnews.ui.ArticleListViewModel
 import com.example.ravengamingnews.ui.ArticlePage
 import com.example.ravengamingnews.ui.BrowseScreenAlt
 import com.example.ravengamingnews.ui.EditAccountScreen
@@ -162,6 +163,7 @@ fun HomeScreen(
     val navigationViewModel: NavigationViewModel = hiltViewModel()
     val editAccountViewModel: EditAccountViewModel = hiltViewModel()
     val filtersViewModel: FiltersViewModel = hiltViewModel()
+    val articleListViewModel: ArticleListViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: AppRoutes.HOME_FEED
 
@@ -195,16 +197,16 @@ fun HomeScreen(
             composable(route = AppRoutes.HOME_FEED) {
 //                FeedScreen(navigationViewModel, articleListViewModel)
                 FeedScreenAlt(
-                    navigationViewModel = navigationViewModel, filtersViewModel = filtersViewModel
+                    navigationViewModel = navigationViewModel, filtersViewModel = filtersViewModel, articlesViewModel = articleListViewModel
                 )
             }
             composable(route = AppRoutes.HOME_ALL) {
-                AllTabContent(navigationViewModel)
+                AllTabContent(navigationViewModel, articlesViewModel = articleListViewModel)
             }
             composable(route = AppRoutes.HOME_BROWSE) {
 //                BrowseScreen()
                 BrowseScreenAlt(
-                    filtersViewModel = filtersViewModel, navigationViewModel = navigationViewModel
+                    filtersViewModel = filtersViewModel, navigationViewModel = navigationViewModel, articleListViewModel = articleListViewModel
                 )
             }
             composable(route = AppRoutes.SETTINGS_EDIT_ACCOUNT) {
@@ -215,7 +217,7 @@ fun HomeScreen(
                 FiltersScreenAlt(viewModel = filtersViewModel)
             }
             composable(route = AppRoutes.SETTINGS_SAVED) {
-                SavedScreen(navigationViewModel = navigationViewModel)
+                SavedScreen(navigationViewModel = navigationViewModel, articlesViewModel = articleListViewModel)
             }
             composable(route = AppRoutes.SETTINGS_SUPPORT) {
                 SupportScreen()
@@ -229,7 +231,7 @@ fun HomeScreen(
                 })
             ) { backStackEntry ->
                 val articleId = backStackEntry.arguments?.getString("articleId")
-                ArticlePage(articleId = articleId)
+                ArticlePage(articleId = articleId, articleListViewModel = articleListViewModel)
             }
         }
     }
