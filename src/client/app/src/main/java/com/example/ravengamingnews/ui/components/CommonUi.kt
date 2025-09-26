@@ -2,6 +2,7 @@ package com.example.ravengamingnews.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -27,11 +30,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -40,6 +45,8 @@ import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.theme.CommonUiSize
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 import com.example.ravengamingnews.ui.theme.linkTextStyle
+import com.example.ravengamingnews.util.toFormattedString
+import kotlin.time.Instant
 
 /**
  * Container for common UI components in the app
@@ -205,6 +212,75 @@ fun TopAppBarButtonPR(
             } else {
                 Spacer(modifier = Modifier.height(8.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun ArticleCard(
+    articleTitle: String,
+    articleAuthor: String,
+    articlePreview: String,
+    articleDate: Instant,
+    wasClicked: Boolean,
+    isSaved: Boolean,
+    onSaveClick: () -> Unit,
+    onClick: () -> Unit
+) {
+    val articleCardColor = if (wasClicked) MaterialTheme.colorScheme.tertiary
+    else MaterialTheme.colorScheme.primaryContainer
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+            .height(175.dp)
+            //.border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(8.dp))
+            .clickable { onClick() },
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(6.dp),
+        colors = CardDefaults
+            .cardColors(
+                containerColor = articleCardColor
+            )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp),
+        ) {
+            Text(
+                text = articleTitle,
+                style = MaterialTheme.typography.headlineLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+            Text(
+                text = articleAuthor,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+            Text(
+                text = articlePreview,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
+            Text(
+                text = articleDate.toFormattedString(LocalContext.current),
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

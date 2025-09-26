@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,9 +47,12 @@ fun LoginScreen(
             },
         contentAlignment = Alignment.Center
     ) {
-        val email = viewModel.email.collectAsState(initial = "")       // TODO: need to also handle validation error(s) like invalid email format
-        val password = viewModel.password.collectAsState(initial = "") // TODO: need to also handle error(s) like cannot be empty
-        val message = viewModel.authMessage.collectAsState(initial = "") // TODO: use this to show general auth message (invalid credentials, etc.)
+        val email = viewModel.email.collectAsState("")       // TODO: need to also handle validation error(s) like invalid email format
+        val password = viewModel.password.collectAsState("") // TODO: need to also handle error(s) like cannot be empty
+        val emailError by viewModel.emailError.collectAsState()
+        val passwordError by viewModel.passwordError.collectAsState()
+        val message = viewModel.authMessage.collectAsState() // TODO: use this to show general auth message (invalid credentials, etc.)
+
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -61,7 +67,8 @@ fun LoginScreen(
             )
             OutlinedTextFieldPR(
                 value = email.value,
-                isError = false,
+                isError = emailError != null,
+                errorMessage = emailError,
                 onValueChanged = { viewModel.onEmailChange(it) },
                 label = stringResource(R.string.email),
                 onKeyboardAction = { },
@@ -69,7 +76,8 @@ fun LoginScreen(
             OutlinedTextFieldPR(
                 value = password.value,
                 isPassword = true,
-                isError = false,
+                isError = passwordError != null,
+                errorMessage = passwordError,
                 onValueChanged = { viewModel.onPasswordChange(it) },
                 label = stringResource(R.string.password),
                 onKeyboardAction = { },

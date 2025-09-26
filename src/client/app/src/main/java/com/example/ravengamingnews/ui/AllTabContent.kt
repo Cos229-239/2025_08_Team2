@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,7 +25,7 @@ import com.example.ravengamingnews.ui.components.ArticleCard
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
-fun FeedScreen(
+fun AllTabContent(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
@@ -31,6 +33,8 @@ fun FeedScreen(
         articlesViewModel.articleList.collectAsState(initial = listOf()).value
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
     val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
+    val isLoading = articlesViewModel.isLoading.collectAsState(false).value
+    val savedArticles by articlesViewModel.savedArticles.collectAsState(initial = emptySet())
 
     LaunchedEffect(Unit) {
         articlesViewModel.getArticles()
@@ -38,9 +42,18 @@ fun FeedScreen(
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
-        onRefresh = { articlesViewModel.getArticles() },
+        onRefresh = { articlesViewModel.refreshArticles() },
         modifier = Modifier.fillMaxSize()
     ) {
+
+        if (isLoading) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            )
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -66,8 +79,8 @@ fun FeedScreen(
                     item.author,
                     item.summary,
                     item.date,
-                    isSaved = false,
-                    onSaveClick = { },
+                    isSaved = savedArticles.contains(item.id),
+                    onSaveClick = { articlesViewModel.toggleSaveArticle(item.id) },
                     wasClicked = isClicked,
                     onClick = {
                         articlesViewModel.markArticleClicked(item.id)
@@ -86,8 +99,8 @@ fun FeedScreen(
 
 @Preview
 @Composable
-fun FeedScreenPreview() {
+fun AllTabContentPreview() {
     RavenGamingNewsTheme {
-        FeedScreen()
+        AllTabContent()
     }
 }

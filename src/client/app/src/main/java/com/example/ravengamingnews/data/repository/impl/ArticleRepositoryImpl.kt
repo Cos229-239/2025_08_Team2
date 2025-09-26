@@ -10,12 +10,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ArticleRepositoryImpl @Inject constructor(
-    private val postgrest: Postgrest
+    private val postgrest: Postgrest,
 ) : ArticleRepository {
     override suspend fun getArticles(): List<ArticleDto>? {
         return withContext(Dispatchers.IO) {
-            val result = postgrest.from("articles")
-                .select(
+            val result = postgrest.from("articles").select(
                     Columns.raw(
                         """
                             *,
@@ -28,8 +27,7 @@ class ArticleRepositoryImpl @Inject constructor(
                     )
                 ) {
                     order("date", Order.DESCENDING)
-                }
-                .decodeList<ArticleDto>()
+                }.decodeList<ArticleDto>()
             result
         }
     }

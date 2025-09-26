@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -13,34 +14,55 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ravengamingnews.navigation.AppRoutes
 import com.example.ravengamingnews.navigation.NavigationViewModel
 import com.example.ravengamingnews.ui.components.ArticleCard
-import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
-fun FeedScreen(
+fun FeedScreenAlt(
     navigationViewModel: NavigationViewModel = hiltViewModel(),
     articlesViewModel: ArticleListViewModel = hiltViewModel(),
+    filtersViewModel: FiltersViewModel = hiltViewModel()
 ) {
+    val gameFilters = filtersViewModel.gameFilters.collectAsState().value
+    val topicFilters = filtersViewModel.topicFilters.collectAsState().value
     val articleList =
         articlesViewModel.articleList.collectAsState(initial = listOf()).value
     val clickedArticles by articlesViewModel.clickedArticles.collectAsState(initial = emptyMap())
     val isRefreshing = articlesViewModel.isRefreshing.collectAsState(false).value
+    val isLoading = articlesViewModel.isLoading.collectAsState(false).value
+    val savedArticles by articlesViewModel.savedArticles.collectAsState(initial = emptySet())
+    val initialLoadComplete = articlesViewModel.initialLoadComplete.collectAsState().value
 
     LaunchedEffect(Unit) {
-        articlesViewModel.getArticles()
+        filtersViewModel.loadUserFilters()
+        articlesViewModel.setInitialLoadComplete()
+    }
+
+    LaunchedEffect(gameFilters, topicFilters, initialLoadComplete) {
+        if (initialLoadComplete && gameFilters.isNotEmpty() && topicFilters.isNotEmpty()) {
+            articlesViewModel.getArticlesByFilters(gameFilters, topicFilters)
+        }
     }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
-        onRefresh = { articlesViewModel.getArticles() },
+        onRefresh = { articlesViewModel.refreshArticlesByFilters(gameFilters, topicFilters) },
         modifier = Modifier.fillMaxSize()
     ) {
+
+        if (isLoading) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            )
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -66,8 +88,8 @@ fun FeedScreen(
                     item.author,
                     item.summary,
                     item.date,
-                    isSaved = false,
-                    onSaveClick = { },
+                    isSaved = savedArticles.contains(item.id),
+                    onSaveClick = { articlesViewModel.toggleSaveArticle(item.id) },
                     wasClicked = isClicked,
                     onClick = {
                         articlesViewModel.markArticleClicked(item.id)
@@ -81,13 +103,5 @@ fun FeedScreen(
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun FeedScreenPreview() {
-    RavenGamingNewsTheme {
-        FeedScreen()
     }
 }

@@ -1,6 +1,5 @@
 package com.example.ravengamingnews.ui
 
-import android.graphics.drawable.shapes.OvalShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,30 +21,38 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.materialIcon
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.ravengamingnews.R
 import com.example.ravengamingnews.ui.components.OutlinedTextFieldPR
 import com.example.ravengamingnews.ui.theme.RavenGamingNewsTheme
 
 @Composable
-fun EditAccountScreen() {
-    var isEditing by remember{ mutableStateOf(false)}
+fun EditAccountScreen(
+    viewModel: EditAccountViewModel = hiltViewModel()
+) {
+    val isEditing = viewModel.editing.collectAsState().value
+    val email by viewModel.email.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+    val firstName by viewModel.firstName.collectAsState()
+    val firstNameError by viewModel.firstNameError.collectAsState()
+    val lastName by viewModel.lastName.collectAsState()
+    val lastNameError by viewModel.lastNameError.collectAsState()
+    val dateOfBirth by viewModel.dateOfBirth.collectAsState()
+    val infoMessage by viewModel.infoMessage.collectAsState()
 
-    var email by remember { mutableStateOf(value = "") }
-   // var password by remember { mutableStateOf(value = "") }
-    var fName by remember { mutableStateOf(value = "") }
-    var lName by remember { mutableStateOf(value = "") }
-    var dateOfBirth by remember { mutableStateOf(value = "")}
-
-
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-    ){
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -60,19 +63,23 @@ fun EditAccountScreen() {
             item {
                 OutlinedTextFieldPR(
                     value = email,
-                    onValueChanged = { newText -> email = newText},
+                    onValueChanged = { viewModel.onEmailChange(it) },
                     label = "EMAIL ADDRESS",
                     onKeyboardAction = {},
+                    isError = emailError != null,
+                    errorMessage = emailError,
                     isEditable = isEditing,
                     isEnabled = true
                 )
             }
             item {
                 OutlinedTextFieldPR(
-                    value = fName,
-                    onValueChanged = { newText -> fName = newText},
+                    value = firstName,
+                    onValueChanged = { viewModel.onFirstNameChange(it) },
                     label = "FIRST NAME",
                     onKeyboardAction = {},
+                    isError = firstNameError != null,
+                    errorMessage = firstNameError,
                     isEditable = isEditing,
                     isEnabled = true
                 )
@@ -80,10 +87,12 @@ fun EditAccountScreen() {
 
             item {
                 OutlinedTextFieldPR(
-                    value = lName,
-                    onValueChanged = { newText -> lName = newText},
+                    value = lastName,
+                    onValueChanged = { viewModel.onLastNameChange(it) },
                     label = "LAST NAME",
                     onKeyboardAction = {},
+                    isError = lastNameError != null,
+                    errorMessage = lastNameError,
                     isEditable = isEditing,
                     isEnabled = true
                 )
@@ -100,9 +109,9 @@ fun EditAccountScreen() {
             }
         }
         Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -110,7 +119,13 @@ fun EditAccountScreen() {
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 Button(
-                    onClick = { isEditing = !isEditing },
+                    onClick = {
+                        if (isEditing) {
+                            viewModel.onSaveChanges()
+                        } else {
+                            viewModel.setEditing(true)
+                        }
+                    },
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 8.dp,
                         pressedElevation = 4.dp,
@@ -131,7 +146,7 @@ fun EditAccountScreen() {
                     )
                 }
                 if (isEditing) Button(
-                    onClick = { isEditing = false },
+                    onClick = { viewModel.setEditing(false) },
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 8.dp,
                         pressedElevation = 4.dp,
@@ -152,6 +167,25 @@ fun EditAccountScreen() {
                     )
                 }
             }
+        }
+    }
+    infoMessage?.let {
+        Snackbar(
+            modifier = Modifier.padding(8.dp),
+            action = {
+                Button(onClick = { viewModel.clearInfoMessage() }) { Text(stringResource(R.string.ok)) }
+            }
+        ) { Text(infoMessage ?: stringResource(R.string.unexpected_error_contact_support)) }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserProfile()
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.clearInfoMessage()
+            viewModel.setEditing(false)
         }
     }
 }
