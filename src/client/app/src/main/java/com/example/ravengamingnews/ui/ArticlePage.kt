@@ -17,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,15 +31,15 @@ fun ArticlePage(
     articleListViewModel: ArticleListViewModel = hiltViewModel(),
 ) {
 
-    val id = articleId?.toIntOrNull()
-    val article = articleListViewModel.articleList.collectAsState(emptyList()).value.find { it.id == id }
+    val savedArticles = articleListViewModel.savedArticles.collectAsState(initial = emptySet()).value
+    val articles = articleListViewModel.articleList.collectAsState(emptyList()).value
+    val article = articles.find{ it.id == articleId?.toIntOrNull() }
 
     if (article == null) {
         Text("Article not found", modifier = Modifier.padding(8.dp))
         return
     }
 
-    val savedArticles by articleListViewModel.savedArticles.collectAsState(initial = emptySet())
     val isSaved = savedArticles.contains(article.id)
 
     Box(

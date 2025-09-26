@@ -34,7 +34,16 @@ fun SavedScreen(
 ) {
 
     LaunchedEffect(Unit) {
-        articlesViewModel.loadSavedArticles()
+        articlesViewModel.getArticles()
+        articlesViewModel.setInitialLoadComplete()
+    }
+
+    val initialLoadComplete = articlesViewModel.initialLoadComplete.collectAsState().value
+
+    LaunchedEffect(initialLoadComplete) {
+        if (initialLoadComplete) {
+            articlesViewModel.loadSavedArticles()
+        }
     }
 
     val articleList = articlesViewModel.articleList.collectAsState(initial = listOf()).value
